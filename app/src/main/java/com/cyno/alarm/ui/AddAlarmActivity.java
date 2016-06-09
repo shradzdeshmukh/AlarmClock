@@ -2,10 +2,7 @@ package com.cyno.alarm.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +13,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -24,29 +22,20 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.cyno.alarm.adapters.AlarmListAdapter;
-import com.cyno.alarm.ads.AddsImplementer;
-import com.cyno.alarm.ads.IAdsListner;
-import com.cyno.alarm.alarm_logic.AlarmReceiver;
 import com.cyno.alarm.database.AlarmTable;
+import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.models.CustomRingtone;
 import com.cyno.alarmclock.R;
-import com.cyno.alarm.models.Alarm;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -54,7 +43,8 @@ import java.util.Calendar;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class AddAlarmActivity extends AppCompatActivity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor>, TimePickerDialog.OnTimeSetListener {
+public class AddAlarmActivity extends AppCompatActivity implements
+        View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor>, TimePickerDialog.OnTimeSetListener {
 
     private static final int LOADER_ID = 100;
     private static final int ACTION_CHOOSE_RINGTONE = 111;
@@ -94,37 +84,7 @@ public class AddAlarmActivity extends AppCompatActivity implements View.OnClickL
         fabAddAlarm.setOnClickListener(this);
 
 
-        AdView adView = new AdView(this);
-        adView.setVisibility(View.GONE);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.ad_layout);
-        layout.addView(adView);
-        IAdsListner listner = new AddsImplementer(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                super.onAdClosed();
-            }
 
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                super.onAdFailedToLoad(errorCode);
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                super.onAdLeftApplication();
-            }
-
-            @Override
-            public void onAdOpened() {
-                super.onAdOpened();
-            }
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-            }
-        });
-        listner.buildNewBannerAd(adView);
     }
 
     @Override

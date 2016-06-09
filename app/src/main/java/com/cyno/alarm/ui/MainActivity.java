@@ -36,33 +36,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cyno.alarm.ads.AddsImplementer;
-import com.cyno.alarm.ads.IAdsListner;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.alarm_logic.WakeLocker;
-import com.cyno.alarm.in_app_utils.IabHelper;
-import com.cyno.alarm.in_app_utils.IabResult;
-import com.cyno.alarm.in_app_utils.InAppListner;
 import com.cyno.alarm.in_app_utils.InAppListnerImpl;
-import com.cyno.alarm.in_app_utils.Inventory;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarmclock.R;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
+
+//TODO fix bug while alarm ringing press back... next time doesnt open app.. just rings alarm
 
 public class MainActivity extends AppCompatActivity implements
         View.OnClickListener, ShakeDetector.Listener{
 
-    private static final String AD_UNIT_ID = "ca-app-pub-1382822742393934/6096577604";
 
 
     private static final long TIME_SHOW_BOTTOM_LAYOUT = 7000;
@@ -110,9 +103,8 @@ public class MainActivity extends AppCompatActivity implements
     private boolean hasAccelerometer;
     private boolean bSnoozed;
     private InAppListnerImpl inAppListner;
-    private InterstitialAd mIntertial;
-    private Intent nextIntent;
-    private AddsImplementer adsListner;
+    Timer timer;
+    SnoozeTimerTask snoozeTimerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,38 +168,7 @@ public class MainActivity extends AppCompatActivity implements
         if(Build.VERSION.SDK_INT < 21)
             getCamera();
 
-        mIntertial = new InterstitialAd(this);
-        adsListner = new AddsImplementer(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                super.onAdClosed();
-                adsListner.doNextTask(MainActivity.this , IAdsListner.START_ACTIVITY , nextIntent);
-            }
 
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                super.onAdFailedToLoad(errorCode);
-                adsListner.doNextTask(MainActivity.this, IAdsListner.START_ACTIVITY, nextIntent);
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                super.onAdLeftApplication();
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
-            }
-
-            @Override
-            public void onAdOpened() {
-                super.onAdOpened();
-            }
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-            }
-        });
-
-        adsListner.setUpInterstitialAds(this , mIntertial);
     }
 
 
@@ -223,6 +184,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void snoozeAlarm(){
+        if(timer == null)
+            timer = new Timer();
+        else {
+            timer.cancel();
+            timer.purge();
+            timer = new Timer();
+        }
+
+        snoozeTimerTask = new SnoozeTimerTask();
+
         bSnoozed = true;
         try {
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
@@ -233,11 +204,16 @@ public class MainActivity extends AppCompatActivity implements
         }
         if(mVibrator != null && mVibrator.hasVibrator())
             mVibrator.cancel();
-        Intent service = new Intent(this, AlarmService.class);
+     /*   Intent service = new Intent(this, AlarmService.class);
         service.setAction(AlarmService.ACTION_SNOOZE_ALARM);
         service.putExtra(AlarmService.KEY_ALARM_ID, mRingingAlarm.getId());
-        startService(service);
+        startService(service);*/
+
+        timer.schedule(snoozeTimerTask, 1000*60* PreferenceManager.getDefaultSharedPreferences(this).
+                getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10*1000*60));
+
         setOriginalVolume();
+
         Toast.makeText(this , "snoozed for "+PreferenceManager.getDefaultSharedPreferences(this).
                 getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10)+" minutes" , Toast.LENGTH_LONG).show();
     }
@@ -264,6 +240,9 @@ public class MainActivity extends AppCompatActivity implements
         currentToneDuration = -1;
         setOriginalVolume();
         WakeLocker.release();
+        if (timer!=null) {
+            timer.cancel();
+        }
     }
 
 
@@ -288,6 +267,10 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         currentAlarmId = id;
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
     private void playMediaSound(Uri uri) {
@@ -330,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements
                                 + incomingNumber);
                         try {
                             if(mediaPlayer != null)
-                            mediaPlayer.pause();
+                                mediaPlayer.pause();
                         } catch (IllegalStateException e) {
 
                         }
@@ -349,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 super.onCallStateChanged(state, incomingNumber);
             }
-    };
+        };
 
 
         telephonyManager.listen(phoneStateListener,
@@ -460,8 +443,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
             case R.id.iv_add_alarm:
-                nextIntent = new Intent(this, AddAlarmActivity.class);
-                adsListner.showIntertialAd(mIntertial,this , nextIntent);
+                startActivity(new Intent(this, AddAlarmActivity.class));
                 break;
             case R.id.iv_torch:
                 if(!isFlashOn)
@@ -489,7 +471,10 @@ public class MainActivity extends AppCompatActivity implements
         setClockBackGround();
         setDigitsColor();
         startClock();
-        adsListner.buildNewInterstitialAd(mIntertial);
+        if(timer == null)
+            timer = new Timer();
+        if(snoozeTimerTask == null)
+            snoozeTimerTask = new SnoozeTimerTask();
     }
 
     private void startClock(){
@@ -572,7 +557,15 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         count.cancel();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (timer!=null){
+            timer.cancel();
+            timer = null;
+        }
     }
 
     @Override
@@ -652,5 +645,18 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         isIntentionalBack = true;
         super.onBackPressed();
+    }
+
+    class SnoozeTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable(){
+                @Override
+                public void run() {
+                    MainActivity.this.ringAlarm( mRingingAlarm.getId());
+                }});
+        }
+
     }
 }
