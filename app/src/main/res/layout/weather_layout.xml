@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_marginBottom="30dp"
+    android:id="@+id/weather_layout"
+    android:layout_gravity="center_vertical"
+    android:layout_alignLeft="@+id/text1"
+    android:gravity="center_vertical"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:textSize="70sp"
+        android:text="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_weather_icon"
+         />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingLeft="@dimen/normal_padding"
+            android:text="NEW YORK"
+            android:id="@+id/tv_city_name"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:padding="@dimen/normal_padding"
+                android:text="50°"
+                android:id="@+id/tv_current_temp"
+                android:textStyle="bold"
+                android:textSize="50sp"
+                android:textColor="@color/white"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:padding="@dimen/normal_padding"
+                    android:text="min :20° max :50"
+                    android:id="@+id/tv_min_max"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:padding="@dimen/normal_padding"
+                    android:text="CLEAR , SUNNY"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_overview_weather"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

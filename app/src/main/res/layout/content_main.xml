@@ -10,30 +10,26 @@
     android:id="@+id/main_layout"
     android:orientation="vertical">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.8"
         android:gravity="center"
         android:layout_gravity="center"
-        tools:showIn="@layout/activity_main"
         tools:context="com.cyno.alarm.ui.MainActivity">
 
-        <TextView
-            android:id="@+id/tv_am_pm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PM"
-            android:layout_alignRight="@+id/text1"
-            android:layout_gravity="top"
-            android:textSize="@dimen/font_size_am_pm"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"/>
+        <include layout="@layout/weather_layout"/>
 
+        <RelativeLayout
+            android:layout_below="@+id/weather_layout"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/text1"
-            android:layout_below="@+id/tv_am_pm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12:37"
@@ -82,6 +78,19 @@
             android:layout_alignBottom="@+id/text1"
             android:orientation="vertical"
             android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_am_pm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PM"
+                android:padding="@dimen/normal_padding"
+                android:layout_alignRight="@+id/text1"
+                android:layout_gravity="top"
+                android:textSize="@dimen/font_size_am_pm"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"/>
+
+
 
             <TextView
                 android:padding="5dp"
@@ -95,6 +104,7 @@
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
+    </RelativeLayout>
     </RelativeLayout>
 
     <FrameLayout

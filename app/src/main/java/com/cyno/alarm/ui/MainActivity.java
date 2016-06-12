@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String STATE_IS_ALARM_RINGING = "alarm_rining";
     public static final String FONT = "digital.ttf";
     private static final String ACTION_NULL = "NULL";
-
+    private static final String FONT_WEATHER = "weather.ttf";
 
 
     final SimpleDateFormat HOUR_MIN_24_HOUR = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -105,6 +105,11 @@ public class MainActivity extends AppCompatActivity implements
     private InAppListnerImpl inAppListner;
     Timer timer;
     SnoozeTimerTask snoozeTimerTask;
+    private TextView mTextCityName;
+    private TextView mTextCurrentTemp;
+    private TextView mTextMinMax;
+    private TextView mTextWeatherOverview;
+    private TextView mTextWeatherIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +139,12 @@ public class MainActivity extends AppCompatActivity implements
         mTextViewDate = (TextView) findViewById(R.id.tv_date);
         mTextViewSeconds = (TextView) findViewById(R.id.tv_seconds);
         mTextAmPm= (TextView) findViewById(R.id.tv_am_pm);
+        mTextCityName= (TextView) findViewById(R.id.tv_city_name);
+        mTextCurrentTemp= (TextView) findViewById(R.id.tv_current_temp);
+        mTextMinMax= (TextView) findViewById(R.id.tv_min_max);
+        mTextWeatherOverview= (TextView) findViewById(R.id.tv_overview_weather);
+        mTextWeatherIcon = (TextView) findViewById(R.id.tv_weather_icon);
+
         ImageView ivAddAlarm = (ImageView) findViewById(R.id.iv_add_alarm);
         ImageView ivSettings = (ImageView) findViewById(R.id.iv_settings);
         ImageView ivTorrch = (ImageView) findViewById(R.id.iv_torch);
@@ -147,12 +158,19 @@ public class MainActivity extends AppCompatActivity implements
         ivSnooze.setOnClickListener(this);
 
         Typeface tf = Typeface.createFromAsset(getAssets(),FONT);
+        Typeface tfWeather = Typeface.createFromAsset(getAssets(),FONT_WEATHER);
 
         mTextViewTimeHourMin.setTypeface(tf);
         mTextViewDay.setTypeface(tf);
         mTextViewSeconds.setTypeface(tf);
         mTextViewDate.setTypeface(tf);
         mTextAmPm.setTypeface(tf);
+        mTextAmPm.setTypeface(tf);
+        mTextCurrentTemp.setTypeface(tf);
+        mTextCityName.setTypeface(tf);
+        mTextMinMax.setTypeface(tf);
+        mTextWeatherOverview.setTypeface(tf);
+        mTextWeatherIcon.setTypeface(tfWeather);
 
 
         restoreAlarmState();
@@ -520,6 +538,11 @@ public class MainActivity extends AppCompatActivity implements
         mTextViewSeconds.setTextColor(color);
         mTextViewTimeHourMin.setTextColor(color);
         mTextAmPm.setTextColor(color);
+        mTextCityName.setTextColor(color);
+        mTextCurrentTemp.setTextColor(color);
+        mTextWeatherOverview.setTextColor(color);
+        mTextMinMax.setTextColor(color);
+        mTextWeatherIcon.setTextColor(color);
     }
 
     private void setClockBackGround() {
