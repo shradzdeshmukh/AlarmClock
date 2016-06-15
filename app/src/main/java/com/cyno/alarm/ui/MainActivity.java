@@ -550,12 +550,13 @@ public class MainActivity extends AppCompatActivity implements
         ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
             @Override
             public Shader resize(int width, int height) {
+                int color = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).
+                        getInt(SettingsActivity.PREF_CLOCK_BACKGROUND_COLOR, Color.BLUE);
+
                 LinearGradient lg = new LinearGradient(0, 0, width, height,
-                        new int[]{Color.BLACK,PreferenceManager.getDefaultSharedPreferences(MainActivity.this).
-                                getInt(SettingsActivity.PREF_CLOCK_BACKGROUND_COLOR, Color.BLUE),
-                                Color.BLACK, Color.BLACK},
+                        new int[]{Color.BLACK,color, color, color, Color.BLACK, },
 //                        new float[]{0,0.5f,.55f,1}, Shader.TileMode.REPEAT);
-                        new float[]{0.2f,0.6f,.0f,0}, Shader.TileMode.REPEAT);
+                        new float[]{0.1f,0.4798f,0.48f,0.5f,0.7f}, Shader.TileMode.REPEAT);
                 return lg;
             }
         };
