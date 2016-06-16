@@ -28,7 +28,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,6 +39,7 @@ import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.alarm_logic.WakeLocker;
 import com.cyno.alarm.in_app_utils.InAppListnerImpl;
 import com.cyno.alarm.models.Alarm;
+import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
 import com.squareup.seismic.ShakeDetector;
 
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements
 
         setContentView(R.layout.content_main);
 
+        SyncUtils.setSyncAccount(this);
 
         hasFlash = getApplicationContext().getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
@@ -556,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements
                 LinearGradient lg = new LinearGradient(0, 0, width, height,
                         new int[]{Color.BLACK,color, color, color, Color.BLACK, },
 //                        new float[]{0,0.5f,.55f,1}, Shader.TileMode.REPEAT);
-                        new float[]{0.1f,0.4798f,0.48f,0.5f,0.7f}, Shader.TileMode.REPEAT);
+                        new float[]{0.1f,0.4798f,0.48f,0.5f,0.75f}, Shader.TileMode.REPEAT);
                 return lg;
             }
         };
