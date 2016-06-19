@@ -10,4 +10,7 @@
     <string name="snooze_time">Snooze time</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="app_package_name">com.cyno.alarmclock</string>
+    <string name="min">min</string>
+    <string name="max">max</string>
+    <string name="avg">avg</string>
 </resources>

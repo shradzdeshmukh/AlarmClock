@@ -22,6 +22,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -35,10 +37,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.alarm_logic.WakeLocker;
 import com.cyno.alarm.in_app_utils.InAppListnerImpl;
 import com.cyno.alarm.models.Alarm;
+import com.cyno.alarm.models.Weather;
+import com.cyno.alarm.networking.GetWeatherNetworking;
 import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
 import com.squareup.seismic.ShakeDetector;
@@ -69,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements
     public static final String FONT = "digital.ttf";
     private static final String ACTION_NULL = "NULL";
     private static final String FONT_WEATHER = "weather.ttf";
+
+    public static final int WEATHER_UPDATED = 1000;
 
 
     final SimpleDateFormat HOUR_MIN_24_HOUR = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -110,6 +117,18 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mTextMinMax;
     private TextView mTextWeatherOverview;
     private TextView mTextWeatherIcon;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case WEATHER_UPDATED:
+                    updateWeather();
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +206,9 @@ public class MainActivity extends AppCompatActivity implements
         if(Build.VERSION.SDK_INT < 21)
             getCamera();
 
+        updateWeather();
+        GetWeatherNetworking networking = new GetWeatherNetworking(this , true , handler);
+        networking.makeRequest(Weather.class);
 
     }
 
@@ -684,4 +706,12 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+
+    private void updateWeather() {
+        mTextCurrentTemp.setText(String.valueOf(Utils.getCurrentTemperatureC(this)));
+        mTextMinMax.setText(getString(R.string.avg)  +" "+
+                String.valueOf(Utils.getTemperatureC(this)));
+    }
+
+
 }
