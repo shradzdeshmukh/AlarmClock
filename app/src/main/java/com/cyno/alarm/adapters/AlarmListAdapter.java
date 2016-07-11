@@ -243,6 +243,7 @@ public class AlarmListAdapter extends CursorRecyclerViewAdapter<AlarmListAdapter
             @Override
             public void onClick(View v) {
                 Alarm.DeleteAlarm((Integer) v.getTag(), context);
+                notifyDataSetChanged();
             }
         });
 

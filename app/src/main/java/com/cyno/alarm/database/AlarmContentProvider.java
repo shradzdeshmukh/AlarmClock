@@ -13,7 +13,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 
 public class AlarmContentProvider extends ContentProvider{
@@ -46,92 +48,20 @@ public class AlarmContentProvider extends ContentProvider{
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 
-
-		String sTable = "";
-		String sColumns = null;
-		switch ( mURIMatcher.match(uri)) {
-			case ALL_ALARMS:
-				sTable = AlarmTable.ALARM_TABLE;
-				break;
-			case SINGLE_ALARM:
-				sTable = AlarmTable.ALARM_TABLE;
-				sColumns = AlarmTable.COL_ID;
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown URI: " + uri);
-		}if (sColumns != null) {
-			selection = sColumns + "=" + uri.getPathSegments().get(1)
-					+ (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
-		}
-
-		try {
-			SQLiteDatabase db = mDatabase.getWritableDatabase();
-			int count = db.delete(sTable, selection, selectionArgs);
-			if(getContext() != null)
-				getContext().getContentResolver().notifyChange(uri, null);
-			return count;
-		} catch (SQLException e) {
-		}
-		return -1 ;
+		SQLiteDatabase db = mDatabase.getWritableDatabase();
+		int count = db.delete(uri.getLastPathSegment(), selection, selectionArgs);
+		getContext().getContentResolver().notifyChange(uri , null , false);
+		Log.d("delete" , "count = " + count);
+		return count ;
 	}
-
-
-	@Override
-	public String getType(Uri uri) {
-		switch(mURIMatcher.match(uri)){
-			case ALL_ALARMS:
-				return CONTENT_TYPE;
-			case SINGLE_ALARM:
-				return CONTENT_ITEM_TYPE;
-			default:
-				throw new IllegalArgumentException("Unknown Uri "+uri);
-		}
-	}
-
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 
-		String sTable = "";
-		String sColumn = null;
-		Uri mContentUri = null;
-
-		switch(mURIMatcher.match(uri)){
-			case ALL_ALARMS:
-				sTable = AlarmTable.ALARM_TABLE;
-				mContentUri = AlarmTable.CONTENT_URI;
-				break;
-			case SINGLE_ALARM:
-				sTable =  AlarmTable.ALARM_TABLE;
-				sColumn = AlarmTable.COL_ID;
-				mContentUri = AlarmTable.CONTENT_URI;
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown Uri "+uri);
-		}
-
-
-		long rowid;
-		try {
-
-			SQLiteDatabase db = mDatabase.getWritableDatabase();
-			if (values == null) {
-				values = new ContentValues();
-			}
-
-			rowid = db.insert(sTable, sColumn, values);
-			if (rowid > 0){
-				Uri oUri = ContentUris.withAppendedId(mContentUri, rowid);
-				if(getContext() != null)
-					getContext().getContentResolver().notifyChange(oUri, null);
-				return oUri;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		throw new SQLException("Failed to insert row into " + uri);
-
+		SQLiteDatabase db = mDatabase.getWritableDatabase();
+		Uri mUri = ContentUris.withAppendedId(uri, db.insert(uri.getLastPathSegment(), null, values));
+		getContext().getContentResolver().notifyChange(uri , null , false);
+		return mUri;
 	}
 
 	@Override
@@ -143,86 +73,43 @@ public class AlarmContentProvider extends ContentProvider{
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 						String[] selectionArgs, String sortOrder) {
-		String sTable = "";
-		String sColumn = null;
-		String sSort = "";
-		switch(mURIMatcher.match(uri)){
-			case ALL_ALARMS:
-				sTable = AlarmTable.ALARM_TABLE;
-				sSort = AlarmTable.COL_ID;
-				break;
-			case SINGLE_ALARM:
-				sTable = AlarmTable.ALARM_TABLE;
-				sColumn = AlarmTable.COL_ID;
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown Uri "+uri);
-		}
-
-		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-		builder.setTables(sTable);
-		String orderBy;
-		if (TextUtils.isEmpty(sortOrder)) {
-			orderBy = sSort;
-		} else {
-			orderBy = sortOrder;
-		}
-		if (sColumn != null) {
-			selection = sColumn + "=" + uri.getPathSegments().get(1)
-					+ (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
-		}
-
 		SQLiteDatabase db;
-		try {
-			db = mDatabase.getReadableDatabase();
-			Cursor cursor = builder.query(db, projection, selection,
-					selectionArgs, null, null, orderBy);
+		db = mDatabase.getReadableDatabase();
+		Cursor cursor = db.query(uri.getLastPathSegment(), projection, selection, selectionArgs, null, null, sortOrder);;
+		cursor.setNotificationUri(getContext().getContentResolver(), uri);
+		return cursor;
+	}
 
-			if (cursor != null) {
-				cursor.setNotificationUri(getContext().getContentResolver(), uri);
-			}
-
-			return cursor;
-		} catch (SQLException e) {
-		}
-		return null ;
+	@Nullable
+	@Override
+	public String getType(Uri uri) {
+		return null;
 	}
 
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 					  String[] selectionArgs) {
-		String sTable = "";
-		String sColumn = null;
-		Uri mContentUri = null;
-		switch(mURIMatcher.match(uri)){
-			case ALL_ALARMS:
-				sTable = AlarmTable.ALARM_TABLE;
-				mContentUri  = AlarmTable.CONTENT_URI;
-				break;
-			case SINGLE_ALARM:
-				sTable =  AlarmTable.ALARM_TABLE;
-				sColumn = AlarmTable.COL_ID;
-				mContentUri = AlarmTable.CONTENT_URI;
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown Uri "+uri);
-		}
+		SQLiteDatabase db = mDatabase.getWritableDatabase();
+		int count = db.update(uri.getLastPathSegment(), values, selection, selectionArgs);
+		getContext().getContentResolver().notifyChange(uri , null , false);
+		return count;
+	}
+
+	public int bulkInsert(Uri uri, ContentValues[] values){
+		int numInserted = 0;
+		SQLiteDatabase sqlDB = mDatabase.getWritableDatabase();
+		sqlDB.beginTransaction();
 		try {
-			if (sColumn != null) {
-				selection = sColumn	+ "=" + uri.getPathSegments().get(1)
-						+ (!TextUtils.isEmpty(selection) ? " AND (" + selection	+ ')' : "");
+			for (ContentValues cv : values) {
+				long newID = sqlDB.insertOrThrow(uri.getLastPathSegment(), null, cv);
 			}
-
-
-			SQLiteDatabase db = mDatabase.getWritableDatabase();
-			int count = db.update(sTable, values, selection, selectionArgs);
-
-			if(getContext() != null)
-				getContext().getContentResolver().notifyChange(uri, null);
-			return count;
-		} catch (SQLException e) {
+			sqlDB.setTransactionSuccessful();
+			getContext().getContentResolver().notifyChange(uri, null);
+			numInserted = values.length;
+		} finally {
+			sqlDB.endTransaction();
 		}
-		return 0 ;
+		return numInserted;
 	}
 
 
@@ -235,11 +122,15 @@ public class AlarmContentProvider extends ContentProvider{
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			AlarmTable.onCreate(db);
+			PicCodesTable.onCreate(db);
+			SummaryCodesTable.onCreate(db);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			AlarmTable.onUpdate(db, oldVersion, newVersion);
+			PicCodesTable.onUpdate(db, oldVersion, newVersion);
+			SummaryCodesTable.onUpdate(db, oldVersion, newVersion);
 		}
 	}
 }

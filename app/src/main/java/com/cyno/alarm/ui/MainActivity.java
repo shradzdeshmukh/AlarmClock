@@ -1,6 +1,7 @@
 package com.cyno.alarm.ui;
 
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,17 +41,25 @@ import android.widget.Toast;
 import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.alarm_logic.WakeLocker;
+import com.cyno.alarm.database.PicCodesTable;
+import com.cyno.alarm.database.SummaryCodesTable;
 import com.cyno.alarm.in_app_utils.InAppListnerImpl;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.models.Weather;
+import com.cyno.alarm.models.WeatherCodes;
 import com.cyno.alarm.networking.GetWeatherNetworking;
 import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
 import com.squareup.seismic.ShakeDetector;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -76,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String FONT_WEATHER = "weather.ttf";
 
     public static final int WEATHER_UPDATED = 1000;
+    private static final java.lang.String WEATHER_CODES_FILE = "weather_codes.json";
 
 
     final SimpleDateFormat HOUR_MIN_24_HOUR = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -210,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements
         GetWeatherNetworking networking = new GetWeatherNetworking(this , true , handler);
         networking.makeRequest(Weather.class);
 
+        getCodes();
     }
 
 
@@ -708,10 +719,55 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void updateWeather() {
+        mTextCityName.setText(Utils.getCurrentLocation(this));
         mTextCurrentTemp.setText(String.valueOf(Utils.getCurrentTemperatureC(this)));
         mTextMinMax.setText(getString(R.string.avg)  +" "+
                 String.valueOf(Utils.getTemperatureC(this)));
     }
 
 
+    private void getCodes() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("codes", "geting codes");
+                WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
+                Log.d("codes", "got codes");
+                for(WeatherCodes code : codes){
+                    ContentValues values = new ContentValues();
+                    for(int index = 0 ; index < code.getLanguages().size() ; index ++){
+                        values.put(SummaryCodesTable.COL_UNIQUE_CODE , code.getCode());
+                        WeatherCodes.LanguagesModel lang = code.getLanguages().get(index);
+                        values.put(SummaryCodesTable.COL_LANGUAGE_CODE, lang.getLang_iso());
+                        values.put(SummaryCodesTable.COL_DAY_SUMMARY, lang.getDay_text());
+                        values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, lang.getNight_text());
+                        getContentResolver().insert(SummaryCodesTable.CONTENT_URI,values);
+                        values.clear();
+                    }
+                    values.put(SummaryCodesTable.COL_UNIQUE_CODE , code.getCode());
+                    values.put(SummaryCodesTable.COL_LANGUAGE_CODE, "en");
+                    values.put(SummaryCodesTable.COL_DAY_SUMMARY, code.getDay());
+                    values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, code.getNight());
+                    getContentResolver().insert(SummaryCodesTable.CONTENT_URI,values);
+                }
+                Log.d("codes", "got codes");
+            }
+        }).start();
+    }
+
+    private String getJSONString() {
+        String json = null;
+        try {
+            InputStream is = getAssets().open(WEATHER_CODES_FILE);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "unicode");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
 }

@@ -16,6 +16,7 @@ public class Utils {
     private static final String KEY_TEMP_F = "temp_f";
     private static final String KEY_TEMP_NOW_F = "temp_now_f";
     private static final String KEY_TEMP_NOW_C = "temp_now_c";
+    private static final String KEY_LOCATION = "location";
 
     public static String getLatLong(Context context){
         return "18.5204300,73.8567440";
@@ -24,6 +25,7 @@ public class Utils {
     public static void setWeather(Weather weather, Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putInt(KEY_WEATHER_CODE , weather.getCurrent().getCondition().getCode())
+                .putString(KEY_LOCATION, weather.getLocation().getName())
                 .putInt(KEY_IS_DAY , weather.getCurrent().getIs_day())
                 .putFloat(KEY_TEMP_C ,(float) weather.getCurrent().getTemp_c())
                 .putFloat(KEY_TEMP_F ,(float)  weather.getCurrent().getTemp_f())
@@ -52,6 +54,10 @@ public class Utils {
     }
     public static float getCurrentTemperatureF(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getFloat(KEY_TEMP_NOW_F,-1) ;
+    }
+
+    public static String getCurrentLocation(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_LOCATION,"") ;
     }
 
 }

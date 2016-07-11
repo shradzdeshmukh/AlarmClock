@@ -2,27 +2,42 @@ package com.cyno.alarm.models;
 
 import com.google.gson.Gson;
 
-public class Weather{
+/**
+ * Created by hp on 02-07-2016.
+ */
+public class Weather {
 
     /**
-     * last_updated_epoch : 1466209387
-     * last_updated : 2016-06-18 00:23
-     * temp_c : 24.1
-     * temp_f : 75.4
+     * name : Poona
+     * region : Maharashtra
+     * country : India
+     * lat : 18.52
+     * lon : 73.86
+     * tz_id : Asia/Kolkata
+     * localtime_epoch : 1467493439
+     * localtime : 2016-07-02 21:03
+     */
+
+    private LocationModel location;
+    /**
+     * last_updated_epoch : 1467492539
+     * last_updated : 2016-07-02 20:48
+     * temp_c : 24.2
+     * temp_f : 75.6
      * is_day : 0
-     * condition : {"text":"Partly Cloudy ","icon":"//cdn.apixu.com/weather/64x64/night/116.png","code":1003}
-     * wind_mph : 13.9
-     * wind_kph : 22.3
-     * wind_degree : 277
-     * wind_dir : W
-     * pressure_mb : 1006.0
-     * pressure_in : 30.2
-     * precip_mm : 0.0
-     * precip_in : 0.0
-     * humidity : 83
-     * cloud : 44
-     * feelslike_c : 26.1
-     * feelslike_f : 79.0
+     * condition : {"text":"Light drizzle","icon":"//cdn.apixu.com/weather/64x64/night/266.png","code":1153}
+     * wind_mph : 7.4
+     * wind_kph : 11.9
+     * wind_degree : 240
+     * wind_dir : WSW
+     * pressure_mb : 1004.0
+     * pressure_in : 30.1
+     * precip_mm : 0.4
+     * precip_in : 0.02
+     * humidity : 94
+     * cloud : 89
+     * feelslike_c : 26.8
+     * feelslike_f : 80.2
      */
 
     private CurrentModel current;
@@ -30,6 +45,14 @@ public class Weather{
     public static Weather objectFromData(String str) {
 
         return new Gson().fromJson(str, Weather.class);
+    }
+
+    public LocationModel getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationModel location) {
+        this.location = location;
     }
 
     public CurrentModel getCurrent() {
@@ -40,14 +63,31 @@ public class Weather{
         this.current = current;
     }
 
+    public static class LocationModel {
+        private String name;
+
+        public static LocationModel objectFromData(String str) {
+
+            return new Gson().fromJson(str, LocationModel.class);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
     public static class CurrentModel {
         private double temp_c;
         private double temp_f;
         private int is_day;
         /**
-         * text : Partly Cloudy
-         * icon : //cdn.apixu.com/weather/64x64/night/116.png
-         * code : 1003
+         * text : Light drizzle
+         * icon : //cdn.apixu.com/weather/64x64/night/266.png
+         * code : 1153
          */
 
         private ConditionModel condition;

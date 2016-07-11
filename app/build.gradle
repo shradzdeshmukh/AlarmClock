@@ -31,4 +31,6 @@ dependencies {
     compile 'com.squareup:seismic:1.0.2'
     compile 'com.mcxiaoke.volley:library:1.0.+'
     compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.facebook.stetho:stetho:1.+'
+
 }
