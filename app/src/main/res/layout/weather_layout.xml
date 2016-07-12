@@ -6,13 +6,16 @@
     android:layout_gravity="center_vertical"
     android:layout_alignLeft="@+id/text1"
     android:gravity="center_vertical"
+    android:padding="@dimen/normal_padding_2x"
     android:layout_height="wrap_content">
 
 
     <TextView
         android:layout_gravity="center_vertical"
-        android:textSize="70sp"
+        android:textSize="50sp"
         android:text="1"
+        android:gravity="center"
+        android:padding="@dimen/normal_padding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_weather_icon"
@@ -26,6 +29,7 @@
         <TextView
             android:paddingLeft="@dimen/normal_padding"
             android:text="NEW YORK"
+            android:layout_marginLeft="@dimen/normal_padding"
             android:id="@+id/tv_city_name"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -39,7 +43,8 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:padding="@dimen/normal_padding"
+                android:paddingLeft="@dimen/normal_padding"
+                android:paddingRight="@dimen/normal_padding"
                 android:text="50°"
                 android:id="@+id/tv_current_temp"
                 android:textStyle="bold"

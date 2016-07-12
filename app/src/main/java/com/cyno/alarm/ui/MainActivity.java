@@ -52,14 +52,10 @@ import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
 import com.squareup.seismic.ShakeDetector;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -86,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final int WEATHER_UPDATED = 1000;
     private static final java.lang.String WEATHER_CODES_FILE = "weather_codes.json";
+    private static final String KEY_ARE_WEATHER_CODES_DUMPED = "weather_codes_dumped";
+    private static final String KEY_ARE_PIC_CODES_DUMPED = "key_codes_dumped";
 
 
     final SimpleDateFormat HOUR_MIN_24_HOUR = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -220,7 +218,8 @@ public class MainActivity extends AppCompatActivity implements
         GetWeatherNetworking networking = new GetWeatherNetworking(this , true , handler);
         networking.makeRequest(Weather.class);
 
-        getCodes();
+        getWeatherCodes();
+        getPicCodes();
     }
 
 
@@ -723,36 +722,44 @@ public class MainActivity extends AppCompatActivity implements
         mTextCurrentTemp.setText(String.valueOf(Utils.getCurrentTemperatureC(this)));
         mTextMinMax.setText(getString(R.string.avg)  +" "+
                 String.valueOf(Utils.getTemperatureC(this)));
+        mTextWeatherOverview.setText(Utils.getOverView(this , Utils.getWeatherCode(this) , Locale.getDefault().getLanguage()));
+        mTextWeatherIcon.setText(Utils.getPic(this , Utils.getWeatherCode(this) , Utils.isDay(this)));
     }
 
 
-    private void getCodes() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("codes", "geting codes");
-                WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
-                Log.d("codes", "got codes");
-                for(WeatherCodes code : codes){
-                    ContentValues values = new ContentValues();
-                    for(int index = 0 ; index < code.getLanguages().size() ; index ++){
-                        values.put(SummaryCodesTable.COL_UNIQUE_CODE , code.getCode());
-                        WeatherCodes.LanguagesModel lang = code.getLanguages().get(index);
-                        values.put(SummaryCodesTable.COL_LANGUAGE_CODE, lang.getLang_iso());
-                        values.put(SummaryCodesTable.COL_DAY_SUMMARY, lang.getDay_text());
-                        values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, lang.getNight_text());
-                        getContentResolver().insert(SummaryCodesTable.CONTENT_URI,values);
-                        values.clear();
+    private void getWeatherCodes() {
+        if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_ARE_WEATHER_CODES_DUMPED, false)) {
+
+            PreferenceManager.getDefaultSharedPreferences(this).
+                    edit().putBoolean(KEY_ARE_WEATHER_CODES_DUMPED, true).commit();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("codes", "geting codes");
+                    WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
+                    Log.d("codes", "got codes");
+                    for (WeatherCodes code : codes) {
+                        ContentValues values = new ContentValues();
+                        for (int index = 0; index < code.getLanguages().size(); index++) {
+                            values.put(SummaryCodesTable.COL_UNIQUE_CODE, code.getCode());
+                            WeatherCodes.LanguagesModel lang = code.getLanguages().get(index);
+                            values.put(SummaryCodesTable.COL_LANGUAGE_CODE, lang.getLang_iso());
+                            values.put(SummaryCodesTable.COL_DAY_SUMMARY, lang.getDay_text());
+                            values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, lang.getNight_text());
+                            getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
+                            values.clear();
+                        }
+                        values.put(SummaryCodesTable.COL_UNIQUE_CODE, code.getCode());
+                        values.put(SummaryCodesTable.COL_LANGUAGE_CODE, "en");
+                        values.put(SummaryCodesTable.COL_DAY_SUMMARY, code.getDay());
+                        values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, code.getNight());
+                        getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
                     }
-                    values.put(SummaryCodesTable.COL_UNIQUE_CODE , code.getCode());
-                    values.put(SummaryCodesTable.COL_LANGUAGE_CODE, "en");
-                    values.put(SummaryCodesTable.COL_DAY_SUMMARY, code.getDay());
-                    values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, code.getNight());
-                    getContentResolver().insert(SummaryCodesTable.CONTENT_URI,values);
+                    Log.d("codes", "got codes");
                 }
-                Log.d("codes", "got codes");
-            }
-        }).start();
+            }).start();
+        }
     }
 
     private String getJSONString() {
@@ -769,5 +776,31 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
         return json;
+    }
+
+    private void getPicCodes(){
+        if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_ARE_PIC_CODES_DUMPED, false)) {
+
+            PreferenceManager.getDefaultSharedPreferences(this).
+                    edit().putBoolean(KEY_ARE_PIC_CODES_DUMPED , true).commit();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("codes", "geting codes");
+                    WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
+                    for(WeatherCodes code : codes){
+                        ContentValues values = new ContentValues();
+                        values.put(PicCodesTable.COL_UNIQUE_CODE , code.getCode());
+                        values.put(PicCodesTable.COL_DAY_PIC , Utils.getDayPicCode(code.getCode()));
+                        values.put(PicCodesTable.COL_NIGHT_PIC, Utils.getNightPicCode(code.getCode()));
+                        getContentResolver().insert(PicCodesTable.CONTENT_URI,values);
+                    }
+                }
+            }).start();
+        }
+
+
+
     }
 }
