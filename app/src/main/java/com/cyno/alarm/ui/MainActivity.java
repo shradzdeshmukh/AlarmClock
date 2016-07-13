@@ -1,6 +1,8 @@
 package com.cyno.alarm.ui;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +41,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cyno.alarm.UtilsAndConstants.Utils;
+import com.cyno.alarm.alarm_logic.AlarmReceiver;
 import com.cyno.alarm.alarm_logic.AlarmService;
+import com.cyno.alarm.alarm_logic.SnoozeAlarmReceiver;
 import com.cyno.alarm.alarm_logic.WakeLocker;
 import com.cyno.alarm.database.PicCodesTable;
 import com.cyno.alarm.database.SummaryCodesTable;
@@ -57,7 +61,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Timer;
 import java.util.TimerTask;
 
 
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final java.lang.String WEATHER_CODES_FILE = "weather_codes.json";
     private static final String KEY_ARE_WEATHER_CODES_DUMPED = "weather_codes_dumped";
     private static final String KEY_ARE_PIC_CODES_DUMPED = "key_codes_dumped";
+    private static final int REQ_CODE_SNOOZE = 2133;
 
 
     final SimpleDateFormat HOUR_MIN_24_HOUR = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -118,13 +122,12 @@ public class MainActivity extends AppCompatActivity implements
     private boolean hasAccelerometer;
     private boolean bSnoozed;
     private InAppListnerImpl inAppListner;
-    Timer timer;
-    SnoozeTimerTask snoozeTimerTask;
     private TextView mTextCityName;
     private TextView mTextCurrentTemp;
     private TextView mTextMinMax;
     private TextView mTextWeatherOverview;
     private TextView mTextWeatherIcon;
+    private PendingIntent mSnoozePendingIntent;
 
     private Handler handler = new Handler(){
         @Override
@@ -137,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,7 +208,18 @@ public class MainActivity extends AppCompatActivity implements
         restoreAlarmState();
 
         Intent mIntent = getIntent();
-        if(mIntent != null && mIntent.getAction().equals(ACTION_RING_ALARM) && (!isAlarmRinging || bSnoozed)){
+
+        Log.d("snooze" , "act created");
+        if(mIntent != null)
+            Log.d("snooze" , "action = "+mIntent.getAction());
+        else
+            Log.d("snooze" , "null intent");
+        Log.d("snooze" , "is ringing = "+isAlarmRinging);
+        Log.d("snooze" , "is snoozd= "+bSnoozed);
+
+
+        if(mIntent != null && mIntent.getAction().equals(ACTION_RING_ALARM) ){
+            Log.d("snooze" , "about to ring");
             ringAlarm(mIntent.getIntExtra(KEY_ALARM_ID, -1));
 //            mIntent.removeExtra(KEY_ALARM_ID );
             mIntent.setAction(ACTION_NULL);
@@ -235,16 +250,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void snoozeAlarm(){
-        if(timer == null)
-            timer = new Timer();
-        else {
-            timer.cancel();
-            timer.purge();
-            timer = new Timer();
-        }
-
-        snoozeTimerTask = new SnoozeTimerTask();
-
         bSnoozed = true;
         try {
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
@@ -260,9 +265,7 @@ public class MainActivity extends AppCompatActivity implements
         service.putExtra(AlarmService.KEY_ALARM_ID, mRingingAlarm.getId());
         startService(service);*/
 
-        timer.schedule(snoozeTimerTask, 1000*60* PreferenceManager.getDefaultSharedPreferences(this).
-                getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10*1000*60));
-
+        setAlarmSnoozeDuration(mRingingAlarm);
         setOriginalVolume();
 
         Toast.makeText(this , "snoozed for "+PreferenceManager.getDefaultSharedPreferences(this).
@@ -291,9 +294,8 @@ public class MainActivity extends AppCompatActivity implements
         currentToneDuration = -1;
         setOriginalVolume();
         WakeLocker.release();
-        if (timer!=null) {
-            timer.cancel();
-        }
+        AlarmManager mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mManager.cancel(mSnoozePendingIntent);
     }
 
 
@@ -318,10 +320,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         currentAlarmId = id;
-        if(timer != null) {
-            timer.cancel();
-            timer = null;
-        }
     }
 
     private void playMediaSound(Uri uri) {
@@ -522,10 +520,6 @@ public class MainActivity extends AppCompatActivity implements
         setClockBackGround();
         setDigitsColor();
         startClock();
-        if(timer == null)
-            timer = new Timer();
-        if(snoozeTimerTask == null)
-            snoozeTimerTask = new SnoozeTimerTask();
     }
 
     private void startClock(){
@@ -614,15 +608,14 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         count.cancel();
+
+        if(isAlarmRinging)
+            snoozeAlarm();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (timer!=null){
-            timer.cancel();
-            timer = null;
-        }
     }
 
     @Override
@@ -799,8 +792,21 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }).start();
         }
+    }
 
-
+    private void setAlarmSnoozeDuration(Alarm mAlarm){
+        Intent mIntent = new Intent(this,SnoozeAlarmReceiver.class);
+        mIntent.putExtra(SnoozeAlarmReceiver.ALARM_ID , mAlarm.getId());
+        mSnoozePendingIntent = PendingIntent.getBroadcast(this, REQ_CODE_SNOOZE ,
+                mIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int lastTime = 1000 * 60* PreferenceManager.getDefaultSharedPreferences(this).
+         getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10);
+        if(Build.VERSION.SDK_INT >= 23)
+            mManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+lastTime,
+                    mSnoozePendingIntent);
+        else
+            mManager.set(AlarmManager.RTC_WAKEUP, lastTime, mSnoozePendingIntent);
 
     }
 }

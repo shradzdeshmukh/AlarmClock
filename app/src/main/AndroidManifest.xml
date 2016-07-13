@@ -59,6 +59,7 @@
             android:authorities="@string/authority" />
 
         <receiver android:name="com.cyno.alarm.alarm_logic.AlarmReceiver"/>
+        <receiver android:name="com.cyno.alarm.alarm_logic.SnoozeAlarmReceiver"/>
 
 
         <service
