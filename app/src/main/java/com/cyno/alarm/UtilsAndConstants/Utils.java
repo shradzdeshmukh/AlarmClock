@@ -1,8 +1,16 @@
 package com.cyno.alarm.UtilsAndConstants;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.cyno.alarm.database.PicCodesTable;
 import com.cyno.alarm.database.SummaryCodesTable;
@@ -23,9 +31,39 @@ public class Utils {
     private static final String KEY_TEMP_NOW_F = "temp_now_f";
     private static final String KEY_TEMP_NOW_C = "temp_now_c";
     private static final String KEY_LOCATION = "location";
+    private static final String KEY_INITIAL_LOCATION = "initial_location";
+    private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LONGITUDE = "longitude";
+    private static final String KEY_WEATHER_UPDATES = "weather_updates";
+    private static final String KEY_IS_FIRST_TIME_LAUNCH = "FirstLaunch";
 
-    public static String getLatLong(Context context){
-        return "18.5204300,73.8567440";
+    public static String getLatLong(Context context) {
+        Location loc = getLocation(getLocationManager(context));
+        if(loc != null)
+            return  loc.getLatitude()+","+loc.getLongitude();
+        else if(hasInitialLocation(context))
+            return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_LATITUDE , "")
+                    + " , "+PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_LONGITUDE, "");
+        return null;
+    }
+
+    public static LocationManager getLocationManager(Context context) {
+        return (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    public static boolean hasInitialLocation(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY_INITIAL_LOCATION, false);
+    }
+
+    public static void storeLatLon(String latitude, String longitude, Context context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(KEY_LATITUDE
+                , latitude).putString(KEY_LONGITUDE, longitude).putBoolean(KEY_INITIAL_LOCATION , true).commit();
+
+    }
+
+    @SuppressWarnings("MissingPermission")
+    public static Location getLocation(LocationManager locationManager) {
+        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
     public static void setWeather(Weather weather, Context context) {
@@ -306,4 +344,50 @@ public class Utils {
         }
         return pic;
     }
+
+    public static boolean isWeatherPermited(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY_WEATHER_UPDATES , false);
+    }
+
+    public static void setWeatherPermission(Context context , boolean permission){
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(KEY_WEATHER_UPDATES , permission).commit();
+    }
+
+    public static boolean isFirstTime(Context context){
+        boolean isFirstTime = PreferenceManager.getDefaultSharedPreferences(context).
+                getBoolean(KEY_IS_FIRST_TIME_LAUNCH, true);
+        if(isFirstTime)
+            setFirstTime(context);
+        return isFirstTime;
+    }
+
+    public static void setFirstTime(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit().putBoolean(KEY_IS_FIRST_TIME_LAUNCH , false).commit();
+    }
+
+    public static boolean isGpsOn(Context context) {
+        Log.d("flow1" , "turning on gps");
+        return getLocationManager(context).isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public static void askToTurnOnGps(Context context) {
+        Intent callGPSSettingIntent = new Intent(
+                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        context.startActivity(callGPSSettingIntent);
+
+    }
+
+    public static String getBestProvider(Context context) {
+        LocationManager manager = getLocationManager(context);
+        String provider = null;
+        if(manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            provider = LocationManager.GPS_PROVIDER;
+        else if(manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+            provider = LocationManager.NETWORK_PROVIDER;
+        Log.d("provider","provider = "+provider);
+        return provider;
+    }
+
+
 }

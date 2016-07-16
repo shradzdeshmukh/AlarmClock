@@ -13,4 +13,10 @@
     <string name="min">min</string>
     <string name="max">max</string>
     <string name="avg">avg</string>
+    <string name="need_weather_title">Show Weather?</string>
+    <string name="need_weather_msg">Show weather updates ?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="update_weather">Updating weather info... This will take a while</string>
+    <string name="gps_turn_on">Please turn on GPS</string>
 </resources>

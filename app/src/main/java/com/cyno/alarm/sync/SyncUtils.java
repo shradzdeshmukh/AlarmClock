@@ -33,7 +33,7 @@ import android.util.Log;
  */
 public class SyncUtils {
 	private static final String PREF_SETUP_COMPLETE = "setup_complete";
-	private static final long SYNC_FREQUENCY = 10 * 60;
+	private static final long SYNC_FREQUENCY = 60 * 60;
 
 	/**
 	 * Create an entry for this application in the system account list, if it isn't already there.

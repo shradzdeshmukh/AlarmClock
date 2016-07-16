@@ -5,6 +5,7 @@
     android:id="@+id/weather_layout"
     android:layout_gravity="center_vertical"
     android:layout_alignLeft="@+id/text1"
+    android:visibility="gone"
     android:gravity="center_vertical"
     android:padding="@dimen/normal_padding_2x"
     android:layout_height="wrap_content">
@@ -13,7 +14,6 @@
     <TextView
         android:layout_gravity="center_vertical"
         android:textSize="50sp"
-        android:text="1"
         android:gravity="center"
         android:padding="@dimen/normal_padding"
         android:layout_width="wrap_content"
@@ -28,7 +28,6 @@
 
         <TextView
             android:paddingLeft="@dimen/normal_padding"
-            android:text="NEW YORK"
             android:layout_marginLeft="@dimen/normal_padding"
             android:id="@+id/tv_city_name"
             android:textColor="@color/white"
@@ -45,7 +44,6 @@
             <TextView
                 android:paddingLeft="@dimen/normal_padding"
                 android:paddingRight="@dimen/normal_padding"
-                android:text="50°"
                 android:id="@+id/tv_current_temp"
                 android:textStyle="bold"
                 android:textSize="50sp"
@@ -62,7 +60,6 @@
 
                 <TextView
                     android:padding="@dimen/normal_padding"
-                    android:text="min :20° max :50"
                     android:id="@+id/tv_min_max"
                     android:textStyle="bold"
                     android:textColor="@color/white"
@@ -71,7 +68,6 @@
                     android:layout_height="wrap_content" />
                 <TextView
                     android:padding="@dimen/normal_padding"
-                    android:text="CLEAR , SUNNY"
                     android:textStyle="bold"
                     android:id="@+id/tv_overview_weather"
                     android:textSize="15sp"

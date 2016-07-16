@@ -1,10 +1,13 @@
 package com.cyno.alarm.ui;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,6 +22,9 @@ import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -29,9 +35,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -54,6 +62,7 @@ import com.cyno.alarm.models.WeatherCodes;
 import com.cyno.alarm.networking.GetWeatherNetworking;
 import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
+import com.facebook.stetho.common.Util;
 import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
@@ -65,9 +74,10 @@ import java.util.TimerTask;
 
 
 //TODO fix bug while alarm ringing press back... next time doesnt open app.. just rings alarm
+//TODO location turn on dialog
 
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener, ShakeDetector.Listener{
+        View.OnClickListener, ShakeDetector.Listener , LocationListener{
 
 
 
@@ -88,6 +98,10 @@ public class MainActivity extends AppCompatActivity implements
     private static final String KEY_ARE_WEATHER_CODES_DUMPED = "weather_codes_dumped";
     private static final String KEY_ARE_PIC_CODES_DUMPED = "key_codes_dumped";
     private static final int REQ_CODE_SNOOZE = 2133;
+    private static final long MIN_TIME = AlarmManager.INTERVAL_DAY;
+    private static final float MIN_DIST = 1000 * 10;
+    private static final long INITIAL_DELAY = 1000 * 6;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 555;
 
 
     final SimpleDateFormat HOUR_MIN_24_HOUR = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -128,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mTextWeatherOverview;
     private TextView mTextWeatherIcon;
     private PendingIntent mSnoozePendingIntent;
+    private boolean bShowLocationUpdateToast;
 
     private Handler handler = new Handler(){
         @Override
@@ -142,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements
     };
 
 
+
+    @SuppressWarnings("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -229,14 +246,41 @@ public class MainActivity extends AppCompatActivity implements
         if(Build.VERSION.SDK_INT < 21)
             getCamera();
 
-        updateWeather();
-        GetWeatherNetworking networking = new GetWeatherNetworking(this , true , handler);
-        networking.makeRequest(Weather.class);
-
-        getWeatherCodes();
-        getPicCodes();
+        if(Utils.isFirstTime(this))
+            askWeatherRequired();
+        else
+            updateWeather();
     }
 
+    private void setupWeatherAndLocation() {
+        if (Utils.isWeatherPermited(this)) {
+            getWeatherCodes();
+            getPicCodes();
+
+            if (!Utils.isGpsOn(this) && !Utils.hasInitialLocation(this)) {
+                displayPromptForEnablingGPS();
+                Utils.getLocationManager(this).requestLocationUpdates(LocationManager.GPS_PROVIDER
+                        , MIN_TIME, MIN_DIST, this);
+
+            } else {
+                Log.d("flow1", "setting up weather n location");
+
+                Location location = Utils.getLocationManager(this).getLastKnownLocation(Utils.getBestProvider(this));
+                if (location != null)
+                    processLocationChangeAction(location);
+                else
+                    Utils.getLocationManager(this).requestLocationUpdates(Utils.getBestProvider(this)
+                            , MIN_TIME, MIN_DIST, this);
+
+                if (Utils.hasInitialLocation(this)) {
+                    Log.d("flow1", "has initial location");
+                    GetWeatherNetworking networking = new GetWeatherNetworking(this, true, handler);
+                    networking.makeRequest(Weather.class);
+                    updateWeather();
+                }
+            }
+        }
+    }
 
 
     @Override
@@ -697,28 +741,51 @@ public class MainActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
-    class SnoozeTimerTask extends TimerTask {
 
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable(){
-                @Override
-                public void run() {
-                    MainActivity.this.ringAlarm( mRingingAlarm.getId());
-                }});
-        }
+    @Override
+    public void onLocationChanged(Location location) {
+        processLocationChangeAction(location);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        processLocationChangeAction(Utils.getLocation(Utils.getLocationManager(this)));
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Utils.getLocationManager(this).requestLocationUpdates(provider
+                , MIN_TIME, MIN_DIST, this);
+        bShowLocationUpdateToast = true;
 
     }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+//        processLocationChangeAction(Utils.getLocation(Utils.getLocationManager(this)));
+    }
+
+    private void processLocationChangeAction(Location location){
+        Log.d("flow1","processing location change");
+        Utils.storeLatLon(location.getLatitude()+"" , location.getLongitude()+""  , this);
+        GetWeatherNetworking networking = new GetWeatherNetworking(this, true, handler);
+        networking.makeRequest(Weather.class);
+    }
+
 
     private void updateWeather() {
-        mTextCityName.setText(Utils.getCurrentLocation(this));
-        mTextCurrentTemp.setText(String.valueOf(Utils.getCurrentTemperatureC(this)));
-        mTextMinMax.setText(getString(R.string.avg)  +" "+
-                String.valueOf(Utils.getTemperatureC(this)));
-        mTextWeatherOverview.setText(Utils.getOverView(this , Utils.getWeatherCode(this) , Locale.getDefault().getLanguage()));
-        mTextWeatherIcon.setText(Utils.getPic(this , Utils.getWeatherCode(this) , Utils.isDay(this)));
+        if (!TextUtils.isEmpty(Utils.getLatLong(this))) {
+            Log.d("weathr", "updating weather ui");
+            findViewById(R.id.weather_layout).setVisibility(View.VISIBLE);
+            mTextCityName.setText(Utils.getCurrentLocation(this));
+            mTextCurrentTemp.setText(String.valueOf(Utils.getCurrentTemperatureC(this)));
+            mTextMinMax.setText(getString(R.string.avg) + " " +
+                    String.valueOf(Utils.getTemperatureC(this)));
+            mTextWeatherOverview.setText(Utils.getOverView(this, Utils.getWeatherCode(this),
+                    Locale.getDefault().getLanguage()));
+            mTextWeatherIcon.setText(Utils.getPic(this, Utils.getWeatherCode(this), Utils.isDay(this)));
+        }
     }
-
 
     private void getWeatherCodes() {
         if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_ARE_WEATHER_CODES_DUMPED, false)) {
@@ -801,12 +868,112 @@ public class MainActivity extends AppCompatActivity implements
                 mIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         int lastTime = 1000 * 60* PreferenceManager.getDefaultSharedPreferences(this).
-         getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10);
+                getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10);
         if(Build.VERSION.SDK_INT >= 23)
             mManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+lastTime,
                     mSnoozePendingIntent);
         else
             mManager.set(AlarmManager.RTC_WAKEUP, lastTime, mSnoozePendingIntent);
 
+    }
+
+    private void askWeatherRequired(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setTitle(getString(R.string.need_weather_title));
+                            builder.setMessage(getString(R.string.need_weather_msg));
+                            builder.setNegativeButton(getText(R.string.no), null);
+                            builder.setPositiveButton(getText(R.string.yes), new DialogInterface.OnClickListener() {
+                                @SuppressWarnings("MissingPermission")
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (checkLocationPermision()) {
+                                        Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
+                                        Utils.setWeatherPermission(MainActivity.this , true);
+                                        setupWeatherAndLocation();
+                                    }
+                                }
+                            });
+                            builder.show();
+                        }catch (Exception ex){
+
+
+                        }
+                    }
+                });
+            }
+        } , INITIAL_DELAY);
+    }
+
+
+    public boolean checkLocationPermision() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                Log.d("flow1" , "permission granted");
+                Utils.setWeatherPermission(MainActivity.this , true);
+                Toast.makeText(MainActivity.this , getString(R.string.update_weather) , Toast.LENGTH_LONG).show();
+                setupWeatherAndLocation();
+
+            }
+
+        }
+    }
+
+    public void displayPromptForEnablingGPS(){
+
+        final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
+        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+        final String message = getString(R.string.gps_turn_on);
+
+        builder.setMessage(message)
+                .setPositiveButton(getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                startActivity(new Intent(action));
+                                d.dismiss();
+                            }
+                        })
+                .setNegativeButton(getString(R.string.no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                d.cancel();
+                            }
+                        });
+        builder.create().show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(bShowLocationUpdateToast) {
+            Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
+            bShowLocationUpdateToast = false;
+        }
     }
 }
