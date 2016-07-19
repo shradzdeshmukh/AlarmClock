@@ -385,6 +385,9 @@ public class Utils {
             provider = LocationManager.GPS_PROVIDER;
         else if(manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
             provider = LocationManager.NETWORK_PROVIDER;
+        else
+            provider = LocationManager.PASSIVE_PROVIDER;
+
         Log.d("provider","provider = "+provider);
         return provider;
     }

@@ -19,4 +19,6 @@
     <string name="yes">Yes</string>
     <string name="update_weather">Updating weather info... This will take a while</string>
     <string name="gps_turn_on">Please turn on GPS</string>
+    <string name="no_loc_permission">Permission denied to access location to show weather</string>
+    <string name="weather_on">Show Weather updates</string>
 </resources>

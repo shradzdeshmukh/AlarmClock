@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final float MIN_DIST = 1000 * 10;
     private static final long INITIAL_DELAY = 1000 * 6;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 555;
+    public static final String ACTION_UPDATE_WEATHER = "update_weather";
 
 
     final SimpleDateFormat HOUR_MIN_24_HOUR = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -248,11 +249,16 @@ public class MainActivity extends AppCompatActivity implements
 
         if(Utils.isFirstTime(this))
             askWeatherRequired();
-        else
+        else if(Utils.isWeatherPermited(this))
             updateWeather();
+
+
+
+        WakeLocker.release();
+
     }
 
-    private void setupWeatherAndLocation() {
+    private  void setupWeatherAndLocation() {
         if (Utils.isWeatherPermited(this)) {
             getWeatherCodes();
             getPicCodes();
@@ -289,6 +295,15 @@ public class MainActivity extends AppCompatActivity implements
         if(mIntent != null && mIntent.getAction().equals(ACTION_RING_ALARM)&& (!isAlarmRinging || bSnoozed)){
             Log.d("alarm","new intent ");
             ringAlarm(mIntent.getIntExtra(KEY_ALARM_ID , -1));
+        }
+        if(mIntent != null && mIntent.getAction() != null){
+            if(mIntent.getAction().equals(ACTION_UPDATE_WEATHER)){
+                if (checkLocationPermision()) {
+                    Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
+                    setupWeatherAndLocation();
+                }
+            }
+
         }
 
     }
@@ -327,13 +342,15 @@ public class MainActivity extends AppCompatActivity implements
         }
         bottomLayoutAlarmRinging.setVisibility(View.INVISIBLE);
         isAlarmRinging = false;
+
+        Alarm.storeLocally(mRingingAlarm, this);
+
         Intent service = new Intent(this, AlarmService.class);
         service.setAction(AlarmService.ACTION_STOP_ALARM);
         service.putExtra(AlarmService.KEY_ALARM_ID, mRingingAlarm.getId());
         startService(service);
         if(mVibrator != null && mVibrator.hasVibrator())
             mVibrator.cancel();
-        Alarm.storeLocally(mRingingAlarm, this);
         mRingingAlarm = null;
         currentToneDuration = -1;
         setOriginalVolume();
@@ -564,6 +581,11 @@ public class MainActivity extends AppCompatActivity implements
         setClockBackGround();
         setDigitsColor();
         startClock();
+
+        if(!Utils.isWeatherPermited(this))
+            findViewById(R.id.weather_layout).setVisibility(View.INVISIBLE);
+
+
     }
 
     private void startClock(){
@@ -936,10 +958,16 @@ public class MainActivity extends AppCompatActivity implements
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 Log.d("flow1" , "permission granted");
-                Utils.setWeatherPermission(MainActivity.this , true);
-                Toast.makeText(MainActivity.this , getString(R.string.update_weather) , Toast.LENGTH_LONG).show();
-                setupWeatherAndLocation();
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Utils.setWeatherPermission(MainActivity.this, true);
+                    Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
+                    setupWeatherAndLocation();
+                }else{
+                    Utils.setWeatherPermission(this , false);
+                    Toast.makeText(MainActivity.this, getString(R.string.no_loc_permission), Toast.LENGTH_LONG).show();
 
+                }
             }
 
         }

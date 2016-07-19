@@ -164,6 +164,32 @@
             android:background="@color/very_dark_gray"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:padding="@dimen/normal_padding_2x"
+                android:textColor="@color/white"
+                android:text="@string/weather_on"
+                android:textSize="@dimen/settings_keys"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content" />
+
+            <CheckBox
+                android:id="@+id/settings_weather_on"
+                android:padding="@dimen/normal_padding_2x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <View
+            android:background="@color/very_dark_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
         <TextView
             android:id="@+id/settings_tv_feedback"
             android:padding="@dimen/normal_padding_2x"

@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.color_picker.ColorPickerClickListener;
 import com.cyno.alarm.color_picker.ColorPickerDialogBuilder;
 import com.cyno.alarm.color_picker.ColorPickerView;
@@ -57,11 +58,37 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         setBackroundColor(pref.getInt(PREF_CLOCK_BACKGROUND_COLOR, Color.BLUE));
         setAmPm(pref.getBoolean(PREF_IS_24HOUR, true));
         setScreenOn(pref.getBoolean(PREF_KEEP_SCREEN_ON, true));
+        setWeatherOn(Utils.isWeatherPermited(this));
         setSnoozeInterval(pref.getInt(PREF_SNOOZE_INTERVAL, 10));
         setFeedback();
 
 
     }
+
+    private void setWeatherOn(boolean aBoolean){
+        final CheckBox cb = (CheckBox) findViewById(R.id.settings_weather_on);
+        cb.setChecked(aBoolean);
+
+        View parent = (View) cb.getParent();
+        parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cb.setChecked(!cb.isChecked());
+            }
+        });
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Utils.setWeatherPermission(SettingsActivity.this, isChecked);
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                if (isChecked) {
+                    intent.setAction(MainActivity.ACTION_UPDATE_WEATHER);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
 
     private void setFeedback() {
         TextView tvFeedback = (TextView) findViewById(R.id.settings_tv_feedback);

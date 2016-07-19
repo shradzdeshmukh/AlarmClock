@@ -263,7 +263,8 @@ public class Alarm {
 
     public static Alarm getNextAlarmTime(Context context){
         Alarm alarm = null;
-        Cursor cursor = context.getContentResolver().query(AlarmTable.CONTENT_URI , null , null , null  , AlarmTable.COL_ALARM_TIME);
+        Cursor cursor = context.getContentResolver().query(AlarmTable.CONTENT_URI , null ,
+                AlarmTable.COL_ALARM_IS_ACTIVE + " = ? " ,new String[]{String.valueOf(1)}, AlarmTable.COL_ALARM_TIME);
         int nextAlarmId = -1;
         long time = -1;
         if(cursor != null){

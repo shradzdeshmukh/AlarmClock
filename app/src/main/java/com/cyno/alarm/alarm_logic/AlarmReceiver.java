@@ -43,10 +43,10 @@ public class AlarmReceiver extends BroadcastReceiver{
 
         int alarmId = intent.getIntExtra(ALARM_ID, -1);
         Alarm mAlarm = Alarm.getAlarm(alarmId, context);
-        if(mAlarm == null) {
+       /* if(mAlarm == null) {
             WakeLocker.release();
             return;
-        }
+        }*/
 
         if (mAlarm.isActive()) {
 
@@ -57,12 +57,12 @@ public class AlarmReceiver extends BroadcastReceiver{
             context.startActivity(mIntent);
 
         }else{
-            WakeLocker.release();
             mAlarm.setRepeatDays(Alarm.refreshRepeatDays(mAlarm.getRepeatDays()));
             mAlarm.setTime(mAlarm.getRepeatDays().first());
             Alarm.storeLocally(mAlarm , context);
 //            Intent service = new Intent(context, AlarmService.class);
 //            context.startService(service);
         }
+
     }
 }
