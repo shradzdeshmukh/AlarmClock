@@ -33,7 +33,7 @@ import android.util.Log;
  */
 public class SyncUtils {
 	private static final String PREF_SETUP_COMPLETE = "setup_complete";
-	private static final long SYNC_FREQUENCY = 60 * 60;
+	private static final long SYNC_FREQUENCY = 60 * 60 * 4;
 
 	/**
 	 * Create an entry for this application in the system account list, if it isn't already there.
@@ -41,13 +41,13 @@ public class SyncUtils {
 	 * @param context Context
 	 */
 	public static boolean setSyncAccount(Context context) {
-		
+
 		boolean newAccount = false;
 		boolean setupComplete = PreferenceManager
 				.getDefaultSharedPreferences(context).getBoolean(PREF_SETUP_COMPLETE, false);
 
 		// Create account, if it's missing. (Either first run, or user has deleted account.)
-		Account account = new Account(context.getString(R.string.app_name) , context.getString(R.string.app_package_name));
+		Account account = new Account(context.getString(R.string.app_name) , context.getString(R.string.authority));
 		AccountManager accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
 		if (accountManager.addAccountExplicitly(account, null, null)) {
 			Log.d("sync", "creating new account");
@@ -59,7 +59,7 @@ public class SyncUtils {
 		}
 		if (newAccount || !setupComplete) {
 			PreferenceManager.getDefaultSharedPreferences(context).edit()
-			.putBoolean(PREF_SETUP_COMPLETE, true).commit();
+					.putBoolean(PREF_SETUP_COMPLETE, true).commit();
 		}
 		return newAccount;
 	}

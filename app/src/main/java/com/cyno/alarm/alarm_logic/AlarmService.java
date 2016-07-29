@@ -49,12 +49,13 @@ public class AlarmService extends IntentService {
         if (mAlarm != null) {
             Intent mIntent = new Intent(this, AlarmReceiver.class);
             mIntent.putExtra(AlarmReceiver.ALARM_ID, mAlarm.getId());
-            PendingIntent mPendingIntent = PendingIntent.getBroadcast(this, 0, mIntent,
+            PendingIntent mPendingIntent = PendingIntent.getBroadcast(this, mAlarm.getId() , mIntent,
                     PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
             if(Build.VERSION.SDK_INT >= 23)
-                mManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, mAlarm.getRepeatDays().first(), mPendingIntent);
+                mManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                        mAlarm.getRepeatDays().first(), mPendingIntent);
             else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                 mManager.setExact(AlarmManager.RTC_WAKEUP, mAlarm.getRepeatDays().first(), mPendingIntent);
              else

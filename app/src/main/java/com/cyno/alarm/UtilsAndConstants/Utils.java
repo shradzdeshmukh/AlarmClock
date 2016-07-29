@@ -1,6 +1,7 @@
 package com.cyno.alarm.UtilsAndConstants;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.cyno.alarm.AlarmApplication;
 import com.cyno.alarm.database.PicCodesTable;
 import com.cyno.alarm.database.SummaryCodesTable;
 import com.cyno.alarm.models.Weather;
@@ -57,7 +59,7 @@ public class Utils {
 
     public static void storeLatLon(String latitude, String longitude, Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString(KEY_LATITUDE
-                , latitude).putString(KEY_LONGITUDE, longitude).putBoolean(KEY_INITIAL_LOCATION , true).commit();
+                , latitude.trim()).putString(KEY_LONGITUDE, longitude.trim()).putBoolean(KEY_INITIAL_LOCATION , true).commit();
 
     }
 
@@ -390,6 +392,21 @@ public class Utils {
 
         Log.d("provider","provider = "+provider);
         return provider;
+    }
+
+    public static void trackScreen(Activity context, String s){
+        ((AlarmApplication)context.getApplication()).
+                trackScreenView(s);
+
+    }
+
+    public static void trackEvent(Context context, String category, String action, String label , boolean isInteractive){
+        if(!(context instanceof  Activity))
+            ((AlarmApplication)context.getApplicationContext()).trackEvent(category,action,label,isInteractive);
+        else
+            ((AlarmApplication)((Activity)context).getApplication()).
+                    trackEvent(category,action,label,isInteractive);
+
     }
 
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cyno.alarmclock" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.cyno.alarmclockpro">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -20,10 +21,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name="com.cyno.alarm.Application.AlarmApp"
+        tools:replace="android:icon"
+        android:name="com.cyno.alarm.AlarmApplication"
         android:theme="@style/AppTheme" >
         <activity
             android:launchMode="singleInstance"
@@ -47,6 +49,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             >
         </activity>
+
+        <activity android:name="com.cyno.alarm.ui.ThemesActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
 
         <receiver android:name="com.cyno.alarm.alarm_logic.AlarmSetterOnBoot" >
             <intent-filter>

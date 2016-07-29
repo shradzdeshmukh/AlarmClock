@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/greenish_grey"
+    android:layout_height="match_parent">
+
+
+    <GridView
+        android:numColumns="auto_fit"
+        android:columnWidth="@dimen/theme_item_size"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:id="@+id/gv_themes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

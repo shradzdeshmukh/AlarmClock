@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -36,6 +37,8 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -63,10 +66,22 @@ import com.cyno.alarm.networking.GetWeatherNetworking;
 import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
 import com.facebook.stetho.common.Util;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.DatagramSocket;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -77,7 +92,8 @@ import java.util.TimerTask;
 //TODO location turn on dialog
 
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener, ShakeDetector.Listener , LocationListener{
+        View.OnClickListener, ShakeDetector.Listener , com.google.android.gms.location.LocationListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
 
@@ -100,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQ_CODE_SNOOZE = 2133;
     private static final long MIN_TIME = AlarmManager.INTERVAL_DAY;
     private static final float MIN_DIST = 1000 * 10;
-    private static final long INITIAL_DELAY = 1000 * 6;
+    private static final long INITIAL_DELAY = 1000 * 4;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 555;
     public static final String ACTION_UPDATE_WEATHER = "update_weather";
 
@@ -144,6 +160,13 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mTextWeatherIcon;
     private PendingIntent mSnoozePendingIntent;
     private boolean bShowLocationUpdateToast;
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+
+    // Location updates intervals in sec
+    private static int UPDATE_INTERVAL = 1000 * 60 * 60 * 6; // 6 hrs
+    private static int FATEST_INTERVAL = 5000; // 5 sec
+    private static int DISPLACEMENT = 1000 * 10; // 10 meters
 
     private Handler handler = new Handler(){
         @Override
@@ -256,34 +279,36 @@ public class MainActivity extends AppCompatActivity implements
 
         WakeLocker.release();
 
+        buildGoogleApiClient();
     }
 
     private  void setupWeatherAndLocation() {
         if (Utils.isWeatherPermited(this)) {
             getWeatherCodes();
             getPicCodes();
+            createLocationRequest();
+            startLocationUpdates();
 
-            if (!Utils.isGpsOn(this) && !Utils.hasInitialLocation(this)) {
-                displayPromptForEnablingGPS();
-                Utils.getLocationManager(this).requestLocationUpdates(LocationManager.GPS_PROVIDER
-                        , MIN_TIME, MIN_DIST, this);
+//            if (!Utils.isGpsOn(this) && !Utils.hasInitialLocation(this)) {
+//                displayPromptForEnablingGPS();
+//               /* Utils.getLocationManager(this).requestLocationUpdates(LocationManager.GPS_PROVIDER
+//                        , MIN_TIME, MIN_DIST, this);*/
+//
+//            } else {
+//                Log.d("flow1", "setting up weather n location");
 
-            } else {
-                Log.d("flow1", "setting up weather n location");
+//            Location location = Utils.getLocationManager(this).getLastKnownLocation(Utils.getBestProvider(this));
+//            if (location != null)
+//                processLocationChangeAction(location);
+//                else
+//                    Utils.getLocationManager(this).requestLocationUpdates(Utils.getBestProvider(this)
+//                            , MIN_TIME, MIN_DIST, this);
 
-                Location location = Utils.getLocationManager(this).getLastKnownLocation(Utils.getBestProvider(this));
-                if (location != null)
-                    processLocationChangeAction(location);
-                else
-                    Utils.getLocationManager(this).requestLocationUpdates(Utils.getBestProvider(this)
-                            , MIN_TIME, MIN_DIST, this);
-
-                if (Utils.hasInitialLocation(this)) {
-                    Log.d("flow1", "has initial location");
-                    GetWeatherNetworking networking = new GetWeatherNetworking(this, true, handler);
-                    networking.makeRequest(Weather.class);
-                    updateWeather();
-                }
+            if (Utils.hasInitialLocation(this)) {
+                Log.d("flow1", "has initial location");
+                GetWeatherNetworking networking = new GetWeatherNetworking(this, true, handler);
+                networking.makeRequest(Weather.class);
+                updateWeather();
             }
         }
     }
@@ -327,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements
         setAlarmSnoozeDuration(mRingingAlarm);
         setOriginalVolume();
 
-        Toast.makeText(this , "snoozed for "+PreferenceManager.getDefaultSharedPreferences(this).
-                getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10)+" minutes" , Toast.LENGTH_LONG).show();
+        Toast.makeText(this , getString(R.string.snoozed_for)+ " "+PreferenceManager.getDefaultSharedPreferences(this).
+                getInt(SettingsActivity.PREF_SNOOZE_INTERVAL, 10)+" "+getString(R.string.minutes), Toast.LENGTH_LONG).show();
     }
 
     private void stopAlarm() {
@@ -403,7 +428,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "error ", Toast.LENGTH_LONG).show();
         }
         mediaPlayer.start();
 
@@ -585,7 +609,9 @@ public class MainActivity extends AppCompatActivity implements
         if(!Utils.isWeatherPermited(this))
             findViewById(R.id.weather_layout).setVisibility(View.INVISIBLE);
 
-
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
     }
 
     private void startClock(){
@@ -677,6 +703,8 @@ public class MainActivity extends AppCompatActivity implements
 
         if(isAlarmRinging)
             snoozeAlarm();
+
+        stopLocationUpdates();
     }
 
     @Override
@@ -766,10 +794,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("location" , "loc changed");
         processLocationChangeAction(location);
     }
 
-    @Override
+   /* @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         processLocationChangeAction(Utils.getLocation(Utils.getLocationManager(this)));
     }
@@ -785,7 +814,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onProviderDisabled(String provider) {
 //        processLocationChangeAction(Utils.getLocation(Utils.getLocationManager(this)));
-    }
+    }*/
 
     private void processLocationChangeAction(Location location){
         Log.d("flow1","processing location change");
@@ -838,6 +867,7 @@ public class MainActivity extends AppCompatActivity implements
                         values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, code.getNight());
                         getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
                     }
+                    handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
                     Log.d("codes", "got codes");
                 }
             }).start();
@@ -878,6 +908,8 @@ public class MainActivity extends AppCompatActivity implements
                         values.put(PicCodesTable.COL_NIGHT_PIC, Utils.getNightPicCode(code.getCode()));
                         getContentResolver().insert(PicCodesTable.CONTENT_URI,values);
                     }
+                    handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
+
                 }
             }).start();
         }
@@ -908,6 +940,7 @@ public class MainActivity extends AppCompatActivity implements
                     public void run() {
                         try {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setCancelable(false);
                             builder.setTitle(getString(R.string.need_weather_title));
                             builder.setMessage(getString(R.string.need_weather_msg));
                             builder.setNegativeButton(getText(R.string.no), null);
@@ -978,7 +1011,7 @@ public class MainActivity extends AppCompatActivity implements
         final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
         final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
         final String message = getString(R.string.gps_turn_on);
-
+        builder.setCancelable(false);
         builder.setMessage(message)
                 .setPositiveButton(getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
@@ -1003,5 +1036,100 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
             bShowLocationUpdateToast = false;
         }
+    }
+
+
+    /**
+     * Creating location request object
+     * */
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FATEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+//                final LocationSettingsStates = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    MainActivity.this,
+                                    333);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
+     * Creating google api client object
+     * */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+    }
+
+    /**
+     * Stopping location updates
+     */
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+
+    /**
+     * Starting the location updates
+     * */
+    protected void startLocationUpdates() {
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if(Utils.isWeatherPermited(this)) {
+            Log.d("location" , "on connected");
+
+            createLocationRequest();
+            startLocationUpdates();
+            Location mLastLocation = LocationServices.FusedLocationApi
+                    .getLastLocation(mGoogleApiClient);
+
+            if (mLastLocation != null) {
+                processLocationChangeAction(mLastLocation);
+            } else{
+                startLocationUpdates();
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

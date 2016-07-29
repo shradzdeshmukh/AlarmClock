@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8"
+        android:id="@+id/container"
+        ></FrameLayout>
+
+    <Button
+        android:id="@+id/bt_choose_theme"
+        android:layout_margin="@dimen/normal_padding"
+        android:padding="@dimen/normal_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/manual_theme"
+        android:textColor="@color/white"
+        android:background="@color/colorAccent"
+        />
+
+</LinearLayout>

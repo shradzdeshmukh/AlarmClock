@@ -20,7 +20,7 @@ import android.util.Log;
 
 public class AlarmContentProvider extends ContentProvider{
 
-	public static final String AUTHORITY = "com.cyno.alarm";
+	public static final String AUTHORITY = "com.cyno.alarmpro";
 	private static final String DATABASE_NAME = "alarms_db";
 	private static final int DATABASE_VERSION = 2;
 

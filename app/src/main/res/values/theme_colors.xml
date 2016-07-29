@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="theme_colors">
+        <item>#f44336</item>
+        <item>#E91E63</item>
+        <item>#9C27B0</item>
+        <item>#673AB7</item>
+        <item>#3F51B5</item>
+        <item>#2196F3</item>
+        <item>#03A9F4</item>
+        <item>#00BCD4</item>
+        <item>#2f70e1</item>
+        <item>#53d76a</item>
+        <item>#ddaa3b</item>
+        <item>#e5000f</item>
+        <item>#ffffff</item>
+        <item>#faebd7</item>
+        <item>#fdf5e6</item>
+        <item>#fffff0</item>
+        <item>#fff5ee</item>
+        <item>#f8f8ff</item>
+        <item>#fffafa</item>
+        <item>#faf0e6</item>
+        <item>#404040</item>
+        <item>#808080</item>
+        <item>#c0c0c0</item>
+        <item>#000000</item>
+        <item>#857570</item>
+        <item>#767a85</item>
+        <item>#222222</item>
+        <item>#1ca0aa</item>
+        <item>#6799aa</item>
+        <item>#8ddaf7</item>
+        <item>#63a1f7</item>
+        <item>#70dbdb</item>
+        <item>#00b2ee</item>
+        <item>#0d4f8b</item>
+        <item>#4372aa</item>
+        <item>#5971ad</item>
+        <item>#6495ed</item>
+        <item>#bedce6</item>
+        <item>#0d1a23</item>
+        <item>#17899b</item>
+        <item>#c8d5db</item>
+        <item>#66a9fb</item>
+
+    <item name="emeraldColor">#019875</item>
+    <item name="grassColor">#63d64a</item>
+    <item name="pastelGreenColor">#7ef27c</item>
+    <item name="seafoamColor">#4de28c</item>
+    <item name="paleGreenColor">#b0e2ac</item>
+    <item name="cactusGreenColor">#636f57</item>
+    <item name="chartreuseColor">#458b00</item>
+    <item name="hollyGreenColor">#20570e</item>
+    <item name="oliveColor">#5b7222</item>
+    <item name="oliveDrabColor">#6b8e23</item>
+    <item name="moneyGreenColor">#86c67c</item>
+    <item name="honeydewColor">#d8ffe7</item>
+    <item name="limeColor">#38ed38</item>
+    <item name="cardTableColor">#57796b</item>
+
+    <item name="salmonColor">#e9575f</item>
+    <item name="brickRedColor">#971b10</item>
+    <item name="easterPinkColor">#f1a7a2</item>
+    <item name="grapefruitColor">#e41f36</item>
+    <item name="pinkColor">#ff5f9a</item>
+    <item name="indianRedColor">#cd5c5c</item>
+    <item name="strawberryColor">#be2625</item>
+    <item name="coralColor">#f08080</item>
+    <item name="maroonColor">#50041c</item>
+    <item name="watermelonColor">#f2473f</item>
+    <item name="tomatoColor">#ff6347</item>
+    <item name="pinkLipstickColor">#ff69b4</item>
+    <item name="paleRoseColor">#ffe4e1</item>
+    <item name="crimsonColor">#bb1224</item>
+
+    <item name="eggplantColor">#690562</item>
+    <item name="pastelPurpleColor">#cf64eb</item>
+    <item name="palePurpleColor">#e5b4eb</item>
+    <item name="coolPurpleColor">#8c5de4</item>
+    <item name="violetColor">#bf5fff</item>
+    <item name="plumColor">#8b668b</item>
+    <item name="lavenderColor">#cc99cc</item>
+    <item name="raspberryColor">#872657</item>
+    <item name="fuschiaColor">#ff1493</item>
+    <item name="grapeColor">#360b58</item>
+    <item name="periwinkleColor">#879fed</item>
+    <item name="orchidColor">#da70d6</item>
+
+    <item name="goldenrodColor">#d7aa33</item>
+    <item name="yellowGreenColor">#c0f227</item>
+    <item name="bananaColor">#e5e33a</item>
+    <item name="mustardColor">#cdab2d</item>
+    <item name="buttermilkColor">#fef1b5</item>
+    <item name="goldColor">#8b7512</item>
+    <item name="creamColor">#f0e2bb</item>
+    <item name="lightCreamColor">#f0eed7</item>
+    <item name="wheatColor">#f0eed7</item>
+    <item name="beigeColor">#f5f5dc</item>
+
+    <item name="peachColor">#f2bb61</item>
+    <item name="burntOrangeColor">#b86625</item>
+    <item name="pastelOrangeColor">#f8c58f</item>
+    <item name="cantaloupeColor">#fa9a4f</item>
+    <item name="carrotColor">#ed9121</item>
+    <item name="mandarinColor">#f79137</item>
+
+    <item name="chiliPowderColor">#c73f17</item>
+    <item name="burntSiennaColor">#8a360f</item>
+    <item name="chocolateColor">#5e2605</item>
+    <item name="coffeeColor">#8d3c0f</item>
+    <item name="cinnamonColor">#7b3f09</item>
+    <item name="almondColor">#c48e48</item>
+    <item name="eggshellColor">#fce6c9</item>
+    <item name="sandColor">#deb697</item>
+    <item name="mudColor">#462d1d</item>
+    <item name="siennaColor">#a0522d</item>
+    <item name="dustColor">#ecd6c5</item>-->
+
+    </array >
+</resources>

@@ -38,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public static final String PREF_SNOOZE_INTERVAL = "snooze_int";
     private static final String FEEDBACK_EMAIL_ID = "developer.shraddha@gmail.com";
     private static final String FEEDBACK_SUBJECT = "Feedback on your app Alarm";
+    private SharedPreferences pref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,15 +54,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         vThemeBackground.setOnClickListener(this);
         vThemeDigits.setOnClickListener(this);
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        setDigitsColor(pref.getInt(PREF_CLOCK_DIGIT_COLOR , Color.WHITE));
-        setBackroundColor(pref.getInt(PREF_CLOCK_BACKGROUND_COLOR, Color.BLUE));
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
         setAmPm(pref.getBoolean(PREF_IS_24HOUR, true));
         setScreenOn(pref.getBoolean(PREF_KEEP_SCREEN_ON, true));
         setWeatherOn(Utils.isWeatherPermited(this));
         setSnoozeInterval(pref.getInt(PREF_SNOOZE_INTERVAL, 10));
         setFeedback();
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setDigitsColor(pref.getInt(PREF_CLOCK_DIGIT_COLOR , Color.WHITE));
+        setBackroundColor(pref.getInt(PREF_CLOCK_BACKGROUND_COLOR, Color.parseColor("#7C4DFF")));
 
     }
 
@@ -84,6 +91,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 if (isChecked) {
                     intent.setAction(MainActivity.ACTION_UPDATE_WEATHER);
                     startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -119,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.settings_theme_background:
-                prepareColorPickerDialog(true);
+                startActivity(new Intent(this , ThemesActivity.class));
                 break;
             case R.id.settings_theme_digits:
                 prepareColorPickerDialog(false);
