@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 
 public class ColorPickerDialogBuilder {

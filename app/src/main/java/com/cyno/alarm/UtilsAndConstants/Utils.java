@@ -400,12 +400,12 @@ public class Utils {
 
     }
 
-    public static void trackEvent(Context context, String category, String action, String label , boolean isInteractive){
+    public static void trackEvent(Context context, String category, String action, String label ){
         if(!(context instanceof  Activity))
-            ((AlarmApplication)context.getApplicationContext()).trackEvent(category,action,label,isInteractive);
+            ((AlarmApplication)context.getApplicationContext()).trackEvent(category,action,label);
         else
             ((AlarmApplication)((Activity)context).getApplication()).
-                    trackEvent(category,action,label,isInteractive);
+                    trackEvent(category,action,label);
 
     }
 

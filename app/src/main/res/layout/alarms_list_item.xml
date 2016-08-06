@@ -30,7 +30,6 @@
                 android:layout_gravity="right|center_vertical"
                 android:gravity="right|center_vertical"
                 android:padding="@dimen/normal_padding"
-                app:showText="false"
                 android:id="@+id/sw_alarms_list_item_on_off"
                 android:layout_width="0dp"
                 android:layout_weight="0.3"

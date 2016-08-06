@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 
 public abstract class AbsCustomSlider extends View {

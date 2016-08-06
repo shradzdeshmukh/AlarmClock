@@ -9,19 +9,7 @@
     <string name="tag_alarm">alarm</string>
     <string name="snooze_time">Snooze time</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="min">min</string>
-    <string name="max">max</string>
-    <string name="avg">avg</string>
-    <string name="need_weather_title">Show Weather?</string>
-    <string name="need_weather_msg">Show weather updates ?</string>
-    <string name="no">No</string>
-    <string name="yes">Yes</string>
-    <string name="update_weather">Updating weather info... </string>
-    <string name="gps_turn_on">Please turn on GPS</string>
-    <string name="no_loc_permission">Permission denied to access location for weather updates</string>
-    <string name="weather_on">Show Weather updates</string>
-    <string name="manual_theme">Choose manual theme</string>
-    <string name="defied_theme">Choose Defined themes</string>
-    <string name="view_holder">tag_view_holder</string>
-    <string name="snoozed_for">Snoozed for</string>
+    <string name="stop_alarm_title">Stop alarm?</string>
+    <string name="stop_alarm_msg">Are you sure you want to stop alarm?</string>
+
 </resources>

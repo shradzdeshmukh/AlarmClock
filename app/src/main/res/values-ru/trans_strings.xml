@@ -20,4 +20,15 @@
     <string name="feedback">Обратная связь</string>
     <string name="no_email_client">Нет клиент электронной почты на устройстве</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">Показать Погода?</string>
+    <string name="need_weather_msg">Показать обновления информации о погоде?</string>
+    <string name="no">Нет</string>
+    <string name="yes">да</string>
+    <string name="update_weather">Обновление сведения о погоде... </string>
+    <string name="no_loc_permission">Доступ запрещен доступ к местоположению обновления погоды</string>
+    <string name="weather_on">Показать обновления погоды</string>
+    <string name="manual_theme">Выберите ручную тему</string>
+    <string name="defied_theme">Выберите предопределенные темы</string>
+    <string name="snoozed_for">Snooze для</string>
 </resources>

@@ -20,4 +20,15 @@
     <string name="feedback">フィードバック</string>
     <string name="no_email_client">お使いのデバイスには電子メールクライアントはありません</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">天気を表示しますか？</string>
+    <string name="need_weather_msg">天気情報を表示しますか？</string>
+    <string name="no">いいえ</string>
+    <string name="yes">はい</string>
+    <string name="update_weather">更新天気情報... </string>
+    <string name="no_loc_permission">許可は、天気情報の場所をアクセスするために拒否されました</string>
+    <string name="weather_on">天気の更新を表示</string>
+    <string name="manual_theme">マニュアルテーマを選択します。</string>
+    <string name="defied_theme">定義されたテーマを選択します。</string>
+    <string name="snoozed_for">以下のためのスヌーズ</string>
 </resources>

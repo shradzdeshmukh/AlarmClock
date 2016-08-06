@@ -20,4 +20,16 @@
     <string name="feedback">Retroalimentación</string>
     <string name="no_email_client">Ningún cliente de correo electrónico en su dispositivo</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">Mostrar Tiempo?</string>
+    <string name="need_weather_msg">Mostrar actualizaciones de tiempo?</string>
+    <string name="no">No</string>
+    <string name="yes">Sí</string>
+    <string name="update_weather">Actualización de información de tiempo... </string>
+    <string name="gps_turn_on">Por favor, active el GPS</string>
+    <string name="no_loc_permission">Ha denegado el permiso para acceder a la ubicación de las actualizaciones del tiempo</string>
+    <string name="weather_on">Mostrar actualizaciones meteorológicas</string>
+    <string name="manual_theme">Elija el tema Manual</string>
+    <string name="defied_theme">Elija temas definidos</string>
+    <string name="snoozed_for">para posponer los</string>
 </resources>

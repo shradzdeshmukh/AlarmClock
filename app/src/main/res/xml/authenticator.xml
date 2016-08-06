@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
-                       android:accountType="@string/app_package_name"
+                       android:accountType="@string/authority"
                        android:icon="@mipmap/icon"
                        android:smallIcon="@mipmap/icon"
                        android:label="@string/app_name"

@@ -20,4 +20,16 @@
     <string name="feedback">retroazione</string>
     <string name="no_email_client">Nessun client di posta sul dispositivo</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">Mostra Meteo?</string>
+    <string name="need_weather_msg">Mostra aggiornamenti meteo?</string>
+    <string name="no">No</string>
+    <string name="yes">sì</string>
+    <string name="update_weather">Aggiornamento informazioni meteo... </string>
+    <string name="gps_turn_on">Si prega di accendere il GPS</string>
+    <string name="no_loc_permission">Permesso negato per accedere al percorso per gli aggiornamenti meteo</string>
+    <string name="weather_on">Mostra aggiornamenti meteo</string>
+    <string name="manual_theme">Scegliere il tema manuale</string>
+    <string name="defied_theme">Scegli temi definiti</string>
+    <string name="snoozed_for">Snooze per</string>
 </resources>

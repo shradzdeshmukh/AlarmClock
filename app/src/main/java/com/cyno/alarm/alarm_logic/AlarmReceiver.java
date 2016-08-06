@@ -11,9 +11,11 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
+import com.cyno.alarm.UtilsAndConstants.GAConstants;
+import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.ui.MainActivity;
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 /**
  * Created by hp on 15-01-2016.
@@ -47,6 +49,7 @@ public class AlarmReceiver extends BroadcastReceiver{
             WakeLocker.release();
             return;
         }*/
+        Utils.trackEvent(context , GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_BROADCAST_RECIEVE, mAlarm.toString() +"");
 
         if (mAlarm.isActive()) {
 

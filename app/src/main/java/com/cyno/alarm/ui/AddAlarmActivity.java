@@ -31,11 +31,13 @@ import android.view.WindowManager;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.cyno.alarm.UtilsAndConstants.GAConstants;
+import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.adapters.AlarmListAdapter;
 import com.cyno.alarm.database.AlarmTable;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.models.CustomRingtone;
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -66,6 +68,7 @@ public class AddAlarmActivity extends AppCompatActivity implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        Utils.trackScreen(this , "Add Alarm");
 
 //        testNextAlarmTime();
 
@@ -91,6 +94,9 @@ public class AddAlarmActivity extends AppCompatActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_add_alarm:
+                Utils.trackEvent(this , GAConstants.CATEGORY_ADD_ALARM,
+                        GAConstants.ACTION_ADD_ALARM_CLICK, "");
+
                 updateAlarm = null;
                 addNewAlarm();
                 Calendar cal = Calendar.getInstance();
@@ -130,6 +136,8 @@ public class AddAlarmActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
         adapter.setDatasetObserver(data);
+        Utils.trackEvent(this , GAConstants.CATEGORY_ADD_ALARM,
+                GAConstants.ACTION_TOTAL_ALARMS + "" +adapter.getCursor().getCount(),"" );
         if(adapter.getCursor().getCount() == 0){
             mEmptyView.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
@@ -181,6 +189,9 @@ public class AddAlarmActivity extends AppCompatActivity implements
             }
         }
         Alarm.storeLocally(alarm, this);
+        Utils.trackEvent(this , GAConstants.CATEGORY_ADD_ALARM,
+                GAConstants.ACTION_ALARM_SET, alarm.toString());
+
         getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
         Alarm.startAlarmService(this);
     }

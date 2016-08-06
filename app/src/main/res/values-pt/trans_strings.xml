@@ -20,4 +20,15 @@
     <string name="feedback">Comentários</string>
     <string name="no_email_client">Nenhum cliente de e-mail no seu dispositivo</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">Mostrar Tempo?</string>
+    <string name="need_weather_msg">Mostrar alterações climáticas?</string>
+    <string name="no">Não</string>
+    <string name="yes">sim</string>
+    <string name="update_weather">Atualizando informação meteorológica... </string>
+    <string name="no_loc_permission">Permission denied to access location for weather updates</string>
+    <string name="weather_on">Mostrar atualizações do Tempo</string>
+    <string name="manual_theme">Mostrar atualizações do Tempo</string>
+    <string name="defied_theme">Escolha temas definidos</string>
+    <string name="snoozed_for">Snooze para</string>
 </resources>

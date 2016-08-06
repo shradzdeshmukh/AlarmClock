@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
 
 import com.cyno.alarm.models.ThemeModel;
 import com.cyno.alarm.ui.SettingsActivity;
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 import java.util.ArrayList;
 
@@ -73,9 +73,9 @@ public class ThemesAdapter extends BaseAdapter {
             @Override
             public Shader resize(int width, int height) {
                 LinearGradient lg = new LinearGradient(0, 0, width, height,
-                        new int[]{Color.BLACK,color, color, color, Color.BLACK, },
+                        new int[]{color,color, color, color, Color.BLACK, },
 //                        new float[]{0,0.5f,.55f,1}, Shader.TileMode.REPEAT);
-                        new float[]{0.03f,0.4798f,0.48f,0.5f,0.99f}, Shader.TileMode.REPEAT);
+                        new float[]{0.0001f,0.4798f,0.48f,0.5f,0.999999f}, Shader.TileMode.REPEAT);
                 return lg;
             }
         };

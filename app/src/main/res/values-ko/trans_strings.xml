@@ -20,4 +20,15 @@
     <string name="feedback">피드백</string>
     <string name="no_email_client">장치에는 이메일 클라이언트 없음</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">날씨를 보여?</string>
+    <string name="need_weather_msg">날씨 업데이트를보기?</string>
+    <string name="no">아니</string>
+    <string name="yes">예</string>
+    <string name="update_weather">업데이트 날씨 정보... </string>
+    <string name="no_loc_permission">권한은 날씨 업데이트 위치에 액세스 할 거부</string>
+    <string name="weather_on">날씨 업데이트를보기</string>
+    <string name="manual_theme">수동 테마를 선택</string>
+    <string name="defied_theme">정의 테마를 선택</string>
+    <string name="snoozed_for">대한 일시 중지</string>
 </resources>

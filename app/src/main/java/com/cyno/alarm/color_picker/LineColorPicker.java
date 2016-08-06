@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 
 public class LineColorPicker extends View {

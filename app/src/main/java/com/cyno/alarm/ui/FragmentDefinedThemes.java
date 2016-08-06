@@ -14,9 +14,11 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
+import com.cyno.alarm.UtilsAndConstants.GAConstants;
+import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.adapters.ThemesAdapter;
 import com.cyno.alarm.models.ThemeModel;
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,7 @@ public class FragmentDefinedThemes extends Fragment implements AdapterView.OnIte
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Utils.trackScreen(getActivity() , "Defined Themes");
         super.onViewCreated(view, savedInstanceState);
         GridView gvThemes = (GridView) view.findViewById(R.id.gv_themes);
         gvThemes.setAdapter(getGridAdapter());
@@ -66,6 +69,8 @@ public class FragmentDefinedThemes extends Fragment implements AdapterView.OnIte
                 .putInt(SettingsActivity.PREF_CLOCK_DIGIT_COLOR ,
                         adapter.getItem(position).getDigitsgroundColor())
                 .commit();
+        Utils.trackEvent(getActivity(), GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_PREDEFINED_THEME_CHOOSE,
+                adapter.getItem(position).getBackgroundColor()+" | " + adapter.getItem(position).getDigitsgroundColor());
         getActivity().finish();
     }
 }

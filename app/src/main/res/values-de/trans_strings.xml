@@ -20,4 +20,15 @@
     <string name="feedback">Rückkopplung</string>
     <string name="no_email_client">Keine E-Mail-Client auf Ihrem Gerät</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">Zeigen Wetter?</string>
+    <string name="need_weather_msg">Zeigen Wetter Aktuelles?</string>
+    <string name="no">Nein</string>
+    <string name="yes">ja</string>
+    <string name="update_weather">Aktualisieren von Wetterinformationen... </string>
+    <string name="no_loc_permission">Keine Berechtigung für den Zugriff auf Standort für Wetter</string>
+    <string name="weather_on">Zeigen Wetter Aktuelles</string>
+    <string name="manual_theme">Wählen Sie manuelle Thema</string>
+    <string name="defied_theme">Wählen Sie definierte Themen</string>
+    <string name="snoozed_for">Snooze für</string>
 </resources>

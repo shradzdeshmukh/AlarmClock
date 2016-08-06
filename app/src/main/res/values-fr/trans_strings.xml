@@ -20,4 +20,15 @@
     <string name="feedback">réaction</string>
     <string name="no_email_client">Aucun client de messagerie sur votre terminal</string>
 
+    <!--new strings-->
+    <string name="need_weather_title">Afficher la météo?</string>
+    <string name="need_weather_msg">Afficher les mises à jour de temps?</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
+    <string name="update_weather">Mise à jour des informations météorologiques... </string>
+    <string name="no_loc_permission">Autorisation refusée pour accéder à l\'emplacement des mises à jour de temps</string>
+    <string name="weather_on">Afficher les mises à jour météorologiques</string>
+    <string name="manual_theme">Choisissez le thème manuel</string>
+    <string name="defied_theme">Choisissez des thèmes définis</string>
+    <string name="snoozed_for">Snooze pour</string>
 </resources>

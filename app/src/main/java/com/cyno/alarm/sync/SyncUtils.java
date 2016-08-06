@@ -17,7 +17,7 @@
 package com.cyno.alarm.sync;
 
 import com.cyno.alarm.database.AlarmContentProvider;
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;

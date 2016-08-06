@@ -20,4 +20,20 @@
     <string name="feedback">Feedback</string>
     <string name="no_email_client">No email client on your device</string>
 
+
+    <!--new strings-->
+    <string name="avg">avg</string>
+    <string name="need_weather_title">Show Weather?</string>
+    <string name="need_weather_msg">Show weather updates ?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="update_weather">Updating weather info... </string>
+    <string name="gps_turn_on">Please turn on GPS</string>
+    <string name="no_loc_permission">Permission denied to access location for weather updates</string>
+    <string name="weather_on">Show Weather updates</string>
+    <string name="manual_theme">Choose manual theme</string>
+    <string name="defied_theme">Choose Defined themes</string>
+    <string name="view_holder">tag_view_holder</string>
+    <string name="snoozed_for">Snoozed for</string>
+
 </resources>

@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cyno.alarm.UtilsAndConstants.GAConstants;
+import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.color_picker.ColorPickerClickListener;
 import com.cyno.alarm.color_picker.ColorPickerDialogBuilder;
 import com.cyno.alarm.color_picker.ColorPickerView;
 import com.cyno.alarm.color_picker.OnColorSelectedListener;
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 /**
  * Created by hp on 20-07-2016.
@@ -32,6 +34,8 @@ public class FragmentManualThemes extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Utils.trackScreen(getActivity() , "Manual Themes");
+
         ColorPickerDialogBuilder
                 .with(getActivity())
                 .lightnessSliderOnly()
@@ -50,6 +54,9 @@ public class FragmentManualThemes extends Fragment {
                         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
                         editor.putInt(SettingsActivity.PREF_CLOCK_BACKGROUND_COLOR, selectedColor);
                         editor.commit();
+                        Utils.trackEvent(getActivity(), GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_CUSTOM_THEME_CHOOSE,
+                                selectedColor + "");
+
                         getActivity().finish();
 
 

@@ -3,11 +3,16 @@ package com.cyno.alarm;
 import android.app.Application;
 import android.preference.PreferenceManager;
 
+import com.cyno.alarm.ui.SettingsActivity;
+import com.cyno.alarmclockpro.R;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * This is a subclass of {@link Application} used to provide shared objects for this app, such as
@@ -78,20 +83,25 @@ public class AlarmApplication extends Application {
      * @param action   action of the event
      * @param label    label
      */
-    public void trackEvent(String category, String action, String label , boolean isInteractive) {
+    public void trackEvent(String category, String action, String label ) {
         Tracker t = getDefaultTracker();
-
+        label = label + " | " + getTime();
         // Build and send an Event.
         t.send(new HitBuilders.EventBuilder().
-                setCategory(action).
-                setAction(label).
-                setNonInteraction(isInteractive).
+                setCategory(category).
+                setAction(action).
                 setLabel(label).build());
 
     }
 
-    private boolean isAnalyticsEnabled(){
-        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_ANALYTICS , true);
+    private String getTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        return new SimpleDateFormat("dd/MM/yy hh:mm").format(cal.getTime());
     }
+
+//    private boolean isAnalyticsEnabled(){
+//        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_ANALYTICS , true);
+//    }
 
 }

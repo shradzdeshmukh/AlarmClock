@@ -1,6 +1,8 @@
 package com.cyno.alarm.alarm_logic;
 
 
+import com.cyno.alarm.UtilsAndConstants.GAConstants;
+import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.ui.SettingsActivity;
 
@@ -34,24 +36,26 @@ public class AlarmService extends IntentService {
             snoozeAlarm(intent.getIntExtra(KEY_ALARM_ID , -1));
         else*/
         if(intent != null && intent.getAction() != null && intent.getAction().equals(ACTION_STOP_ALARM))
-            stopAlarm();
+            stopAlarm(Alarm.getAlarm(intent.getIntExtra(KEY_ALARM_ID , -1), this),this );
         else
-            setAlarm();
+            setAlarm(this);
 
         WakeLocker.release();
 
     }
 
-    private void setAlarm() {
+    private static void setAlarm(Context context) {
         Log.d("alarm", "set new alarm");
 
-        Alarm mAlarm = Alarm.getNextAlarmTime(this);
+        Alarm mAlarm = Alarm.getNextAlarmTime(context);
         if (mAlarm != null) {
-            Intent mIntent = new Intent(this, AlarmReceiver.class);
+            Utils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_SET, mAlarm.toString() +"");
+
+            Intent mIntent = new Intent(context, AlarmReceiver.class);
             mIntent.putExtra(AlarmReceiver.ALARM_ID, mAlarm.getId());
-            PendingIntent mPendingIntent = PendingIntent.getBroadcast(this, mAlarm.getId() , mIntent,
+            PendingIntent mPendingIntent = PendingIntent.getBroadcast(context, mAlarm.getId() , mIntent,
                     PendingIntent.FLAG_CANCEL_CURRENT);
-            AlarmManager mManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            AlarmManager mManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
             if(Build.VERSION.SDK_INT >= 23)
                 mManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
@@ -80,11 +84,12 @@ public class AlarmService extends IntentService {
 //            mManager.set(AlarmManager.RTC_WAKEUP, lastTime, mPendingIntent);
 //    }
 
-    private void stopAlarm(){
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), REQ_CODE_ALARM , intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+    public static void stopAlarm(Alarm alarm , Context context){
+        Utils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, alarm.toString() +"");
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarm.getId() , intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-        setAlarm();
+        setAlarm(context);
     }
 }

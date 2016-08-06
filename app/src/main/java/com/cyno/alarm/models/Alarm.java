@@ -1,5 +1,7 @@
 package com.cyno.alarm.models;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +14,12 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.cyno.alarm.UtilsAndConstants.GAConstants;
+import com.cyno.alarm.UtilsAndConstants.Utils;
+import com.cyno.alarm.alarm_logic.AlarmReceiver;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.database.AlarmTable;
-import com.cyno.alarmclock.R;
+import com.cyno.alarmclockpro.R;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -122,6 +127,10 @@ public class Alarm {
 
         if(count == 0)
             context.getContentResolver().insert(AlarmTable.CONTENT_URI , values);
+        else{
+            Utils.trackEvent(context , GAConstants.CATEGORY_ADD_ALARM,
+                    GAConstants.ACTION_UPDATE_ALARM, alarm.toString());
+        }
 
     }
 
@@ -230,14 +239,17 @@ public class Alarm {
 
     public static void DeleteAlarm(int id , Context context){
         Log.d("alarm", "delete alarm");
+        Alarm alarm = Alarm.getAlarm(id , context);
+        Utils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, alarm.toString() +"|Delete");
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarm.getId() , intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
 
         context.getContentResolver().delete(AlarmTable.CONTENT_URI, AlarmTable.COL_ID + " = ? ",
                 new String[]{String.valueOf(id)});
 
-        Intent service = new Intent(context, AlarmService.class);
-        service.setAction(AlarmService.ACTION_STOP_ALARM);
-        context.startService(service);
-
+        context.startService(new Intent(context, AlarmService.class));
     }
 
     public static long getTimeOfDay(int day , long originalTime){
@@ -298,6 +310,19 @@ public class Alarm {
     public static void startAlarmService(Context context){
         Intent service = new Intent(context, AlarmService.class);
         context.startService(service);
+    }
+
+    @Override
+    public String toString() {
+        return "Alarm{" +
+                "id=" + id +
+                ", time=" + time +
+                ", isVibrate=" + isVibrate +
+                ", ringtone='" + ringtone + '\'' +
+                ", isActive=" + isActive +
+                ", isRepeat=" + isRepeat +
+                ", repeatDays=" + repeatDays +
+                '}';
     }
 
 }

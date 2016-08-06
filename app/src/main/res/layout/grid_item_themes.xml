@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="@dimen/normal_padding"
+    android:layout_gravity="center"
+    android:paddingTop="@dimen/normal_padding"
+    android:paddingBottom="@dimen/normal_padding"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <View
         android:id="@+id/background"
+        android:layout_gravity="center"
         android:layout_width="@dimen/theme_item_size"
         android:layout_height="@dimen/theme_item_size"/>
 </LinearLayout>
