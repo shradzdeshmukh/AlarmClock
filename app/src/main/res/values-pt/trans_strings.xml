@@ -31,4 +31,11 @@
     <string name="manual_theme">Mostrar atualizações do Tempo</string>
     <string name="defied_theme">Escolha temas definidos</string>
     <string name="snoozed_for">Snooze para</string>
+
+
+    <string name="stop_alarm_title">Pare de alarme?</string>
+    <string name="stop_alarm_msg">Tem certeza de que deseja parar de alarme?</string>
+    <string name="track_analytics">Ativar atividades de rastreamento dentro do aplicativo</string>
+    <string name="analytics_msg">Para nos ajudar a melhorar o desempenho do aplicativo, o Google Analytics é utilizado para rastrear suas atividades dentro do aplicativo. Não vamos rastrear qualquer coisa, se você definir essa off.</string>
+
 </resources>

@@ -31,4 +31,11 @@
     <string name="manual_theme">Choisissez le thème manuel</string>
     <string name="defied_theme">Choisissez des thèmes définis</string>
     <string name="snoozed_for">Snooze pour</string>
+
+
+    <string name="stop_alarm_title">Arrêtez l\'alarme?</string>
+    <string name="stop_alarm_msg">Etes-vous sûr de vouloir arrêter l\'alarme?</string>
+    <string name="track_analytics">Activer les activités de suivi au sein de l\'application</string>
+    <string name="analytics_msg">Pour nous aider à améliorer les performances des applications Analytics est utilisé pour suivre vos activités au sein de l\'application. Nous ne suivre rien si vous désactivez cette option.</string>
+
 </resources>

@@ -31,4 +31,10 @@
     <string name="manual_theme">Wählen Sie manuelle Thema</string>
     <string name="defied_theme">Wählen Sie definierte Themen</string>
     <string name="snoozed_for">Snooze für</string>
+
+    <string name="stop_alarm_title">Halt alarmieren?</string>
+    <string name="stop_alarm_msg">Sind Sie sicher, dass Sie Alarm zu stoppen?</string>
+    <string name="track_analytics">Aktivieren Tracking-Aktivitäten innerhalb der App</string>
+    <string name="analytics_msg">Um uns zu helfen App-Leistung zu verbessern, wird Analytics verwendet, um Ihre Aktivitäten innerhalb der App zu verfolgen. Wir werden nicht alles verfolgen, wenn Sie diese Funktion deaktivieren.</string>
+
 </resources>

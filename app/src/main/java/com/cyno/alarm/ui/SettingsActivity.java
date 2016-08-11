@@ -1,6 +1,7 @@
 package com.cyno.alarm.ui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public static final String PREF_SNOOZE_INTERVAL = "snooze_int";
     private static final String FEEDBACK_EMAIL_ID = "developer.shraddha@gmail.com";
     private static final String FEEDBACK_SUBJECT = "Feedback on your app Alarm";
+    private static final String PREF_TRACK_ANALYTICS = "track";
     private SharedPreferences pref;
 
     @Override
@@ -59,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         setAmPm(pref.getBoolean(PREF_IS_24HOUR, true));
         setScreenOn(pref.getBoolean(PREF_KEEP_SCREEN_ON, true));
+        setAnalytics(pref.getBoolean(PREF_TRACK_ANALYTICS, true));
         setWeatherOn(Utils.isWeatherPermited(this));
         setSnoozeInterval(pref.getInt(PREF_SNOOZE_INTERVAL, 10));
         setFeedback();
@@ -96,6 +99,30 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     intent.setAction(MainActivity.ACTION_UPDATE_WEATHER);
                     startActivity(intent);
                     finish();
+                }
+            }
+        });
+    }
+
+    private void setAnalytics(boolean aBoolean){
+        final CheckBox cb = (CheckBox) findViewById(R.id.settings_analytics_on);
+        cb.setChecked(aBoolean);
+
+        View parent = (View) cb.getParent();
+        parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cb.setChecked(!cb.isChecked());
+            }
+        });
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                    builder.setMessage(getString(R.string.analytics_msg));
+                    builder.setPositiveButton(android.R.string.ok , null);
+                    builder.show();
                 }
             }
         });
@@ -285,6 +312,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 builder.show();
             }
         });
+    }
+
+    public static boolean isAnalyticsEnabled(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PREF_TRACK_ANALYTICS , true);
     }
 
 }

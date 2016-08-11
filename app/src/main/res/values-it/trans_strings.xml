@@ -26,10 +26,16 @@
     <string name="no">No</string>
     <string name="yes">sì</string>
     <string name="update_weather">Aggiornamento informazioni meteo... </string>
-    <string name="gps_turn_on">Si prega di accendere il GPS</string>
     <string name="no_loc_permission">Permesso negato per accedere al percorso per gli aggiornamenti meteo</string>
     <string name="weather_on">Mostra aggiornamenti meteo</string>
     <string name="manual_theme">Scegliere il tema manuale</string>
     <string name="defied_theme">Scegli temi definiti</string>
     <string name="snoozed_for">Snooze per</string>
+
+
+    <string name="stop_alarm_title">Smettere di allarme?</string>
+    <string name="stop_alarm_msg">Sei sicuro di voler smettere di allarme?</string>
+    <string name="track_analytics">Abilita attività di monitoraggio all\'interno dell\'app</string>
+    <string name="analytics_msg">Per aiutarci a migliorare le prestazioni dell\'applicazione, Analytics viene utilizzato per tenere traccia delle attività all\'interno della app. Noi non seguiremo nulla se si imposta questa via.</string>
+
 </resources>

@@ -31,4 +31,10 @@
     <string name="manual_theme">수동 테마를 선택</string>
     <string name="defied_theme">정의 테마를 선택</string>
     <string name="snoozed_for">대한 일시 중지</string>
+
+    <string name="stop_alarm_title">알람을 중지?</string>
+    <string name="stop_alarm_msg">당신은 알람을 중지 하시겠습니까?</string>
+    <string name="track_analytics">응용 프로그램 내에서 추적 활동을 활성화</string>
+    <string name="analytics_msg">우리는 응용 프로그램 성능을 향상하기 위해 웹 로그 분석은 응용 프로그램 내에서 사용자의 활동을 추적하는 데 사용됩니다. 이를 설정하면 우리는 아무것도 추적하지 않습니다.</string>
+
 </resources>

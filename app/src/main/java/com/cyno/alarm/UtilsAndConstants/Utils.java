@@ -18,6 +18,7 @@ import com.cyno.alarm.database.PicCodesTable;
 import com.cyno.alarm.database.SummaryCodesTable;
 import com.cyno.alarm.models.Weather;
 import com.cyno.alarm.ui.MainActivity;
+import com.cyno.alarm.ui.SettingsActivity;
 
 import java.util.Locale;
 
@@ -395,18 +396,21 @@ public class Utils {
     }
 
     public static void trackScreen(Activity context, String s){
+        if(SettingsActivity.isAnalyticsEnabled(context))
         ((AlarmApplication)context.getApplication()).
                 trackScreenView(s);
 
     }
 
     public static void trackEvent(Context context, String category, String action, String label ){
-        if(!(context instanceof  Activity))
-            ((AlarmApplication)context.getApplicationContext()).trackEvent(category,action,label);
-        else
-            ((AlarmApplication)((Activity)context).getApplication()).
-                    trackEvent(category,action,label);
+        if(SettingsActivity.isAnalyticsEnabled(context)) {
 
+            if (!(context instanceof Activity))
+                ((AlarmApplication) context.getApplicationContext()).trackEvent(category, action, label);
+            else
+                ((AlarmApplication) ((Activity) context).getApplication()).
+                        trackEvent(category, action, label);
+        }
     }
 
 

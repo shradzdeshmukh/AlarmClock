@@ -31,4 +31,11 @@
     <string name="manual_theme">Выберите ручную тему</string>
     <string name="defied_theme">Выберите предопределенные темы</string>
     <string name="snoozed_for">Snooze для</string>
+
+
+    <string name="stop_alarm_title">Стоп сигнал тревоги?</string>
+    <string name="stop_alarm_msg">Вы уверены, что хотите, чтобы остановить сигнал тревоги?</string>
+    <string name="track_analytics">Включение отслеживания деятельности в рамках приложения</string>
+    <string name="analytics_msg">Чтобы помочь нам улучшить производительность приложений, аналитика используется для отслеживания вашей деятельности в пределах приложения. Мы не будем ничего отслеживать, если вы установите эту опцию.</string>
+
 </resources>

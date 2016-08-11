@@ -26,10 +26,15 @@
     <string name="no">No</string>
     <string name="yes">Sí</string>
     <string name="update_weather">Actualización de información de tiempo... </string>
-    <string name="gps_turn_on">Por favor, active el GPS</string>
     <string name="no_loc_permission">Ha denegado el permiso para acceder a la ubicación de las actualizaciones del tiempo</string>
     <string name="weather_on">Mostrar actualizaciones meteorológicas</string>
     <string name="manual_theme">Elija el tema Manual</string>
     <string name="defied_theme">Elija temas definidos</string>
     <string name="snoozed_for">para posponer los</string>
+
+    <string name="stop_alarm_title">Deja de alarma?</string>
+    <string name="stop_alarm_msg">¿Está seguro de que desea detener la alarma?</string>
+    <string name="track_analytics">Habilitar el seguimiento de las actividades dentro de la aplicación</string>
+    <string name="analytics_msg">Para ayudar a mejorar el rendimiento de aplicaciones, Analytics se utiliza para realizar un seguimiento de sus actividades dentro de la aplicación. No vamos a realizar un seguimiento de cualquier cosa si se establece esta apagado.</string>
+
 </resources>

@@ -740,6 +740,8 @@ public class MainActivity extends AppCompatActivity implements
 //            snoozeAlarm("on stop");
 
         stopLocationUpdates();
+        if(mGoogleApiClient.isConnected())
+            mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -1069,28 +1071,28 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void displayPromptForEnablingGPS(){
-
-        final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
-        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-        final String message = getString(R.string.gps_turn_on);
-        builder.setCancelable(false);
-        builder.setMessage(message)
-                .setPositiveButton(getString(R.string.yes),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                startActivity(new Intent(action));
-                                d.dismiss();
-                            }
-                        })
-                .setNegativeButton(getString(R.string.no),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                d.cancel();
-                            }
-                        });
-        builder.create().show();
-    }
+//    public void displayPromptForEnablingGPS(){
+//
+//        final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
+//        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+//        final String message = getString(R.string.gps_turn_on);
+//        builder.setCancelable(false);
+//        builder.setMessage(message)
+//                .setPositiveButton(getString(R.string.yes),
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface d, int id) {
+//                                startActivity(new Intent(action));
+//                                d.dismiss();
+//                            }
+//                        })
+//                .setNegativeButton(getString(R.string.no),
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface d, int id) {
+//                                d.cancel();
+//                            }
+//                        });
+//        builder.create().show();
+//    }
 
     @Override
     protected void onResume() {
@@ -1157,17 +1159,18 @@ public class MainActivity extends AppCompatActivity implements
      * Stopping location updates
      */
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
+        if(mGoogleApiClient.isConnected())
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
     }
 
     /**
      * Starting the location updates
      * */
     protected void startLocationUpdates() {
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        if(mGoogleApiClient.isConnected())
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
 
     }
 
@@ -1199,4 +1202,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Utils.trackEvent(this , GAConstants.CATEGORY_LOCATION, GAConstants.ACTION_ERROR_LOCATION, connectionResult.getErrorMessage() +"");
     }
+
+
 }
