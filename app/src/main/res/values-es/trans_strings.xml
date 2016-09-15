@@ -37,4 +37,6 @@
     <string name="track_analytics">Habilitar el seguimiento de las actividades dentro de la aplicación</string>
     <string name="analytics_msg">Para ayudar a mejorar el rendimiento de aplicaciones, Analytics se utiliza para realizar un seguimiento de sus actividades dentro de la aplicación. No vamos a realizar un seguimiento de cualquier cosa si se establece esta apagado.</string>
 
+    <string name="app_name">Reloj despertador X</string>
+
 </resources>

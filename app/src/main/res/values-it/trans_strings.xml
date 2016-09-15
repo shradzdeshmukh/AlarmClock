@@ -38,4 +38,6 @@
     <string name="track_analytics">Abilita attività di monitoraggio all\'interno dell\'app</string>
     <string name="analytics_msg">Per aiutarci a migliorare le prestazioni dell\'applicazione, Analytics viene utilizzato per tenere traccia delle attività all\'interno della app. Noi non seguiremo nulla se si imposta questa via.</string>
 
+    <string name="app_name">Sveglia X</string>
+
 </resources>

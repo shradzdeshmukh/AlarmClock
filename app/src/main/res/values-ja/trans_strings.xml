@@ -37,4 +37,6 @@
     <string name="track_analytics">アプリ内の追跡活動を有効にします</string>
     <string name="analytics_msg">私たちは、アプリのパフォーマンスを改善するため、Analyticsはアプリ内であなたの活動を追跡するために使用されます。これをオフに設定した場合、我々は何を追跡しません。</string>
 
+    <string name="app_name">目覚まし時計X</string>
+
 </resources>

@@ -39,4 +39,7 @@
     <string name="track_analytics">Enable tracking activities within the app</string>
     <string name="analytics_msg">To help us improve app performance, Analytics is used to track your activities within the app. We wont track anything if you set this off.</string>
 
+    <string name="app_name">Alarm Clock X</string>
+
+
 </resources>

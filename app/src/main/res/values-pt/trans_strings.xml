@@ -38,4 +38,6 @@
     <string name="track_analytics">Ativar atividades de rastreamento dentro do aplicativo</string>
     <string name="analytics_msg">Para nos ajudar a melhorar o desempenho do aplicativo, o Google Analytics é utilizado para rastrear suas atividades dentro do aplicativo. Não vamos rastrear qualquer coisa, se você definir essa off.</string>
 
+    <string name="app_name">Relógio Despertador X</string>
+
 </resources>

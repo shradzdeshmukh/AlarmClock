@@ -24,8 +24,6 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -36,7 +34,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -53,7 +50,6 @@ import android.widget.Toast;
 
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
 import com.cyno.alarm.UtilsAndConstants.Utils;
-import com.cyno.alarm.alarm_logic.AlarmReceiver;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.alarm_logic.SnoozeAlarmReceiver;
 import com.cyno.alarm.alarm_logic.WakeLocker;
@@ -66,7 +62,6 @@ import com.cyno.alarm.models.WeatherCodes;
 import com.cyno.alarm.networking.GetWeatherNetworking;
 import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclockpro.R;
-import com.facebook.stetho.common.Util;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -76,17 +71,14 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.DatagramSocket;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimerTask;
 
 
 //TODO fix bug while alarm ringing press back... next time doesnt open app.. just rings alarm
@@ -562,17 +554,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setMaxVolume() {
-//        AudioManager amanager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-//        originalVolume = amanager.getStreamVolume(AudioManager.STREAM_MUSIC);
-//        int maxVolume = amanager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-//        amanager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0);
-        mediaPlayer.setVolume(1,1);
+        AudioManager amanager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        originalVolume = amanager.getStreamVolume(AudioManager.STREAM_ALARM);
+        int maxVolume = amanager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+        amanager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0);
+        mediaPlayer.setVolume(1f,1f);
 
     }
 
     private void setOriginalVolume(){
-//        final AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-//        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+        final AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
     }
 
 
@@ -974,7 +966,7 @@ public class MainActivity extends AppCompatActivity implements
             mManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+lastTime,
                     mSnoozePendingIntent);
         else
-            mManager.set(AlarmManager.RTC_WAKEUP, lastTime, mSnoozePendingIntent);
+            mManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+lastTime, mSnoozePendingIntent);
 
     }
 

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">AlarmClock</string>
     <string name="authority" translatable="false">com.cyno.alarmpro</string>
     <string name="up" translatable="false">up</string>
     <string name="down" translatable="false">down</string>
