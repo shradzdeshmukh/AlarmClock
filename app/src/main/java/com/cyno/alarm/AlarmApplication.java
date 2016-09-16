@@ -1,11 +1,8 @@
 package com.cyno.alarm;
 
 import android.app.Application;
-import android.preference.PreferenceManager;
 
-import com.cyno.alarm.ui.SettingsActivity;
-import com.cyno.alarmclockpro.R;
-import com.facebook.stetho.Stetho;
+import com.cyno.alarmclock.R;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;

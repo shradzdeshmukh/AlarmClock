@@ -61,7 +61,7 @@ import com.cyno.alarm.models.Weather;
 import com.cyno.alarm.models.WeatherCodes;
 import com.cyno.alarm.networking.GetWeatherNetworking;
 import com.cyno.alarm.sync.SyncUtils;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;

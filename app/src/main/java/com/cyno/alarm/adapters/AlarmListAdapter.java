@@ -15,10 +15,10 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.cyno.alarm.database.AlarmTable;
+import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.ui.MainActivity;
 import com.cyno.alarm.ui.SettingsActivity;
-import com.cyno.alarm.models.Alarm;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

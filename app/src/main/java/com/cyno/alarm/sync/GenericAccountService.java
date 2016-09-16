@@ -27,8 +27,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.cyno.alarmclockpro.R;
-
 public class GenericAccountService extends Service {
     private static final String TAG = "GenericAccountService";
     private Authenticator mAuthenticator;

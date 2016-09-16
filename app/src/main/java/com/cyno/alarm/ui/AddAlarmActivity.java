@@ -37,7 +37,7 @@ import com.cyno.alarm.adapters.AlarmListAdapter;
 import com.cyno.alarm.database.AlarmTable;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.models.CustomRingtone;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

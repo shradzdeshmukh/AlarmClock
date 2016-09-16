@@ -17,7 +17,7 @@ import com.cyno.alarm.color_picker.ColorPickerClickListener;
 import com.cyno.alarm.color_picker.ColorPickerDialogBuilder;
 import com.cyno.alarm.color_picker.ColorPickerView;
 import com.cyno.alarm.color_picker.OnColorSelectedListener;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 /**
  * Created by hp on 20-07-2016.

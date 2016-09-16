@@ -10,13 +10,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +24,7 @@ import com.cyno.alarm.color_picker.ColorPickerClickListener;
 import com.cyno.alarm.color_picker.ColorPickerDialogBuilder;
 import com.cyno.alarm.color_picker.ColorPickerView;
 import com.cyno.alarm.color_picker.OnColorSelectedListener;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 /**
  * Created by hp on 24-01-2016.

@@ -1,7 +1,6 @@
 package com.cyno.alarm.ui;
 
 import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,7 +17,7 @@ import com.cyno.alarm.UtilsAndConstants.GAConstants;
 import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.adapters.ThemesAdapter;
 import com.cyno.alarm.models.ThemeModel;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 import java.util.ArrayList;
 

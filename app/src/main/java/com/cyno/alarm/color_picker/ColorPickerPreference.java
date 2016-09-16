@@ -10,7 +10,7 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 
 public class ColorPickerPreference extends Preference {

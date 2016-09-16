@@ -1,31 +1,16 @@
 package com.cyno.alarm.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
 import com.cyno.alarm.UtilsAndConstants.Utils;
-import com.cyno.alarm.color_picker.ColorPickerClickListener;
-import com.cyno.alarm.color_picker.ColorPickerDialogBuilder;
-import com.cyno.alarm.color_picker.ColorPickerView;
-import com.cyno.alarm.color_picker.OnColorSelectedListener;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 /**
  * Created by hp on 24-01-2016.

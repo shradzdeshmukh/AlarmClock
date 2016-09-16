@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -19,7 +18,7 @@ import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.alarm_logic.AlarmReceiver;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.database.AlarmTable;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 import java.util.Arrays;
 import java.util.Calendar;

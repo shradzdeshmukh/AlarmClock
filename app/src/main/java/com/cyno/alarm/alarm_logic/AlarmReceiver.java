@@ -1,21 +1,13 @@
 package com.cyno.alarm.alarm_logic;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
 import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.ui.MainActivity;
-import com.cyno.alarmclockpro.R;
 
 /**
  * Created by hp on 15-01-2016.

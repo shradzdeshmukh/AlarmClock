@@ -8,14 +8,12 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.cyno.alarm.models.ThemeModel;
-import com.cyno.alarm.ui.SettingsActivity;
-import com.cyno.alarmclockpro.R;
+import com.cyno.alarmclock.R;
 
 import java.util.ArrayList;
 
