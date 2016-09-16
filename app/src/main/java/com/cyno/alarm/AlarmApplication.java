@@ -1,11 +1,8 @@
 package com.cyno.alarm;
 
 import android.app.Application;
-import android.preference.PreferenceManager;
 
-import com.cyno.alarm.ui.SettingsActivity;
 import com.cyno.alarmclockpro.R;
-import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
@@ -97,7 +94,7 @@ public class AlarmApplication extends Application {
     private String getTime() {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
-        return new SimpleDateFormat("dd/MM/yy hh:mm").format(cal.getTime());
+        return new SimpleDateFormat("dd/MM/yy hh:mm k").format(cal.getTime());
     }
 
 //    private boolean isAnalyticsEnabled(){
