@@ -18,8 +18,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.color_picker.ColorPickerClickListener;
 import com.cyno.alarm.color_picker.ColorPickerDialogBuilder;
 import com.cyno.alarm.color_picker.ColorPickerView;
@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        Utils.trackScreen(this , "Settings");
+        AppUtils.trackScreen(this , "Settings");
         setContentView(R.layout.settings_activity);
 
         View vThemeBackground = findViewById(R.id.settings_theme_background);
@@ -60,11 +60,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         setAmPm(pref.getBoolean(PREF_IS_24HOUR, true));
         setScreenOn(pref.getBoolean(PREF_KEEP_SCREEN_ON, true));
         setAnalytics(pref.getBoolean(PREF_TRACK_ANALYTICS, true));
-        setWeatherOn(Utils.isWeatherPermited(this));
         setSnoozeInterval(pref.getInt(PREF_SNOOZE_INTERVAL, 10));
         setFeedback();
+        setProApp();
 
 
+    }
+
+    private void setProApp() {
+        findViewById(R.id.pro_app).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppUtils.OpenProApp(SettingsActivity.this);
+            }
+        });
     }
 
     @Override
@@ -75,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void setWeatherOn(boolean aBoolean){
+    /*private void setWeatherOn(boolean aBoolean){
         final CheckBox cb = (CheckBox) findViewById(R.id.settings_weather_on);
         cb.setChecked(aBoolean);
 
@@ -89,9 +98,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Utils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_SHOW_WEATHER_UPDATES, isChecked +"");
+                AppUtils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_SHOW_WEATHER_UPDATES, isChecked +"");
 
-                Utils.setWeatherPermission(SettingsActivity.this, isChecked);
+                AppUtils.setWeatherPermission(SettingsActivity.this, isChecked);
                 Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
                 if (isChecked) {
                     intent.setAction(MainActivity.ACTION_UPDATE_WEATHER);
@@ -100,7 +109,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
-    }
+    }*/
 
     private void setAnalytics(boolean aBoolean){
         final CheckBox cb = (CheckBox) findViewById(R.id.settings_analytics_on);
@@ -128,7 +137,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void setFeedback() {
-        Utils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_FEEDBACK,"");
+        AppUtils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_FEEDBACK,"");
 
         TextView tvFeedback = (TextView) findViewById(R.id.settings_tv_feedback);
         tvFeedback.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +170,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 startActivity(new Intent(this , ThemesActivity.class));
                 break;
             case R.id.settings_theme_digits:
-                Utils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_DIGITS_THEME_CLICKED, "");
+                AppUtils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_DIGITS_THEME_CLICKED, "");
                 prepareColorPickerDialog(false);
                 break;
         }
@@ -196,7 +205,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                             setBackroundColor(selectedColor);
 
                         } else {
-                            Utils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_DIGIT_THEME_COLOR, selectedColor+"");
+                            AppUtils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_DIGIT_THEME_COLOR, selectedColor+"");
 
                             editor.putInt(PREF_CLOCK_DIGIT_COLOR, selectedColor);
                             setDigitsColor(selectedColor);
@@ -240,7 +249,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this).edit();
                 editor.putBoolean(PREF_IS_24HOUR, isChecked);
                 editor.commit();
-                Utils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_24_HRS, isChecked +"");
+                AppUtils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_24_HRS, isChecked +"");
 
             }
         });
@@ -264,7 +273,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this).edit();
                 editor.putBoolean(PREF_KEEP_SCREEN_ON, isChecked);
                 editor.commit();
-                Utils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_PREVENT_SCREEN_FROM_LOCKING, isChecked +"");
+                AppUtils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_PREVENT_SCREEN_FROM_LOCKING, isChecked +"");
 
             }
         });
@@ -301,7 +310,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 interval = 20;
                                 break;
                         }
-                        Utils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_SNOOZE_TIME, interval +"");
+                        AppUtils.trackEvent(SettingsActivity.this , GAConstants.CATEGORY_SETTINGS, GAConstants.ACTION_SNOOZE_TIME, interval +"");
                         edit.putInt(PREF_SNOOZE_INTERVAL , interval);
                         edit.commit();
                         tvSnooze.setText(interval + " " +getString(R.string.minutes) );

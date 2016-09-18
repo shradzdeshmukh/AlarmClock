@@ -52,17 +52,24 @@ public class ThemesAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = View.inflate(context , R.layout.grid_item_themes , null);
             holder.background = convertView.findViewById(R.id.background);
+            holder.locked = convertView.findViewById(R.id.locked);
             convertView.setTag(R.string.view_holder , holder);
         }else{
             holder = (ViewHolder) convertView.getTag(R.string.view_holder);
         }
         setBackgroundColor(holder.background ,getItem(position).getBackgroundColor());
+        if(getItem(position).isLocked())
+            holder.locked.setVisibility(View.VISIBLE);
+        else
+            holder.locked.setVisibility(View.GONE);
+
         return convertView;
     }
 
 
     private static class ViewHolder{
         private View background;
+        private View locked;
     }
 
 

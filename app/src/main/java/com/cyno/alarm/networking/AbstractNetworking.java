@@ -1,16 +1,13 @@
 package com.cyno.alarm.networking;
 
 import android.content.Context;
-import android.provider.SyncStateContract;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
-
-import java.util.logging.Handler;
 
 /**
  * Created by hp on 07-05-2016.
@@ -47,6 +44,6 @@ public abstract class AbstractNetworking implements Response.ErrorListener, Resp
 
     @Override
     public void onResponse(Object response) {
-        Utils.trackEvent(context , GAConstants.CATEGORY_API , url , response.toString() +"");
+        AppUtils.trackEvent(context , GAConstants.CATEGORY_API , url , response.toString() +"");
     }
 }

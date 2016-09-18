@@ -1,19 +1,17 @@
 package com.cyno.alarm.alarm_logic;
 
 
-import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
-import com.cyno.alarm.models.Alarm;
-import com.cyno.alarm.ui.SettingsActivity;
-
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
+import com.cyno.alarm.UtilsAndConstants.GAConstants;
+import com.cyno.alarm.models.Alarm;
 
 public class AlarmService extends IntentService {
 
@@ -49,7 +47,7 @@ public class AlarmService extends IntentService {
 
         Alarm mAlarm = Alarm.getNextAlarmTime(context);
         if (mAlarm != null) {
-            Utils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_SET, mAlarm.toString() +"");
+            AppUtils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_SET, mAlarm.toString() +"");
 
             Intent mIntent = new Intent(context, AlarmReceiver.class);
             mIntent.putExtra(AlarmReceiver.ALARM_ID, mAlarm.getId());
@@ -85,7 +83,7 @@ public class AlarmService extends IntentService {
 //    }
 
     public static void stopAlarm(Alarm alarm , Context context){
-        Utils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, alarm.toString() +"");
+        AppUtils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, alarm.toString() +"");
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarm.getId() , intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);

@@ -8,8 +8,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarmclock.R;
 
 /**
@@ -50,17 +50,15 @@ public class ThemesActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void setPredefinedFragment(){
-        Utils.trackEvent(this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_DEFINED_THEME_CLICK, "");
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_DEFINED_THEME_CLICK, "");
         ((Button)findViewById(R.id.bt_choose_theme)).setText(getString(R.string.manual_theme));
         getFragmentManager().beginTransaction().
                 replace(R.id.container , new FragmentDefinedThemes()).commit();
     }
 
     private void setManualFragment(){
-        Utils.trackEvent(this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_CUSTOM_THEME_CLICK, "");
+        AppUtils.ShowPremiumDialog(this , true);
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_CUSTOM_THEME_CLICK, "");
 
-        ((Button)findViewById(R.id.bt_choose_theme)).setText(getString(R.string.defied_theme));
-        getFragmentManager().beginTransaction().
-                replace(R.id.container , new FragmentManualThemes()).commit();
     }
 }

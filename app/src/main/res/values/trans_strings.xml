@@ -36,10 +36,12 @@
 
     <string name="stop_alarm_title">Stop alarm?</string>
     <string name="stop_alarm_msg">Are you sure you want to stop alarm?</string>
-    <string name="track_analytics">Enable tracking activities within the app</string>
+    <string name="track_analytics">Enable tracking events within the app</string>
     <string name="analytics_msg">To help us improve app performance, Analytics is used to track your activities within the app. We wont track anything if you set this off.</string>
 
-    <string name="app_name">Alarm Clock X</string>
+    <string name="app_name">Alarm Clock</string>
+    <string name="new_pro">New</string>
+
 
 
 </resources>

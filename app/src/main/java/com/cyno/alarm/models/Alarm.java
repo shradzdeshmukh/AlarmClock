@@ -13,8 +13,8 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.alarm_logic.AlarmReceiver;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.database.AlarmTable;
@@ -127,7 +127,7 @@ public class Alarm {
         if(count == 0)
             context.getContentResolver().insert(AlarmTable.CONTENT_URI , values);
         else{
-            Utils.trackEvent(context , GAConstants.CATEGORY_ADD_ALARM,
+            AppUtils.trackEvent(context , GAConstants.CATEGORY_ADD_ALARM,
                     GAConstants.ACTION_UPDATE_ALARM, alarm.toString());
         }
 
@@ -239,7 +239,7 @@ public class Alarm {
     public static void DeleteAlarm(int id , Context context){
         Log.d("alarm", "delete alarm");
         Alarm alarm = Alarm.getAlarm(id , context);
-        Utils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, alarm.toString() +"|Delete");
+        AppUtils.trackEvent(context, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, alarm.toString() +"|Delete");
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarm.getId() , intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);

@@ -1,6 +1,6 @@
 package com.cyno.alarm.ui;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -34,8 +33,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -48,8 +45,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.alarm_logic.SnoozeAlarmReceiver;
 import com.cyno.alarm.alarm_logic.WakeLocker;
@@ -57,21 +54,9 @@ import com.cyno.alarm.database.PicCodesTable;
 import com.cyno.alarm.database.SummaryCodesTable;
 import com.cyno.alarm.in_app_utils.InAppListnerImpl;
 import com.cyno.alarm.models.Alarm;
-import com.cyno.alarm.models.Weather;
 import com.cyno.alarm.models.WeatherCodes;
-import com.cyno.alarm.networking.GetWeatherNetworking;
 import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
@@ -85,8 +70,7 @@ import java.util.Locale;
 //TODO location turn on dialog
 
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener, ShakeDetector.Listener , com.google.android.gms.location.LocationListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        View.OnClickListener, ShakeDetector.Listener {
 
 
 
@@ -111,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final float MIN_DIST = 1000 * 10;
     private static final long INITIAL_DELAY = 1000 * 4;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 555;
-    public static final String ACTION_UPDATE_WEATHER = "update_weather";
+    //    public static final String ACTION_UPDATE_WEATHER = "update_weather";
     private static final String STATE_IS_ALARM_SNOOZED = "snoozed";
 
 
@@ -154,8 +138,6 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mTextWeatherIcon;
     private PendingIntent mSnoozePendingIntent;
     private boolean bShowLocationUpdateToast;
-    private LocationRequest mLocationRequest;
-    private GoogleApiClient mGoogleApiClient;
     private ImageView ivSnooze;
 
 
@@ -189,9 +171,11 @@ public class MainActivity extends AppCompatActivity implements
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         super.onCreate(savedInstanceState);
 
-        Utils.trackScreen(this , "Main");
+        AppUtils.trackScreen(this , "Main");
 
         setContentView(R.layout.content_main);
+
+
 
         SyncUtils.setSyncAccount(this);
 
@@ -268,48 +252,23 @@ public class MainActivity extends AppCompatActivity implements
         if(Build.VERSION.SDK_INT < 21)
             getCamera();
 
-        if(Utils.isFirstTime(this))
-            askWeatherRequired();
-        else if(Utils.isWeatherPermited(this))
-            updateWeather();
-
-
-
         WakeLocker.release();
 
-        buildGoogleApiClient();
     }
 
-    private  void setupWeatherAndLocation() {
-        if (Utils.isWeatherPermited(this)) {
+    /*private  void setupWeatherAndLocation() {
+        if (AppUtils.isWeatherPermited(this)) {
             getWeatherCodes();
             getPicCodes();
-            createLocationRequest();
-            startLocationUpdates();
 
-//            if (!Utils.isGpsOn(this) && !Utils.hasInitialLocation(this)) {
-//                displayPromptForEnablingGPS();
-//               /* Utils.getLocationManager(this).requestLocationUpdates(LocationManager.GPS_PROVIDER
-//                        , MIN_TIME, MIN_DIST, this);*/
-//
-//            } else {
-//                Log.d("flow1", "setting up weather n location");
-
-//            Location location = Utils.getLocationManager(this).getLastKnownLocation(Utils.getBestProvider(this));
-//            if (location != null)
-//                processLocationChangeAction(location);
-//                else
-//                    Utils.getLocationManager(this).requestLocationUpdates(Utils.getBestProvider(this)
-//                            , MIN_TIME, MIN_DIST, this);
-
-            if (Utils.hasInitialLocation(this)) {
+            if (AppUtils.hasInitialLocation(this)) {
                 Log.d("flow1", "has initial location");
                 GetWeatherNetworking networking = new GetWeatherNetworking(this, true, handler);
                 networking.makeRequest(Weather.class);
                 updateWeather();
             }
         }
-    }
+    }*/
 
 
     @Override
@@ -319,21 +278,21 @@ public class MainActivity extends AppCompatActivity implements
             Log.d("alarm","new intent ");
             ringAlarm(mIntent.getIntExtra(KEY_ALARM_ID , -1) , "onNewIntent");
         }
-        if(mIntent != null && mIntent.getAction() != null){
-            if(mIntent.getAction().equals(ACTION_UPDATE_WEATHER)){
-                if (checkLocationPermision()) {
-                    Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
-                    setupWeatherAndLocation();
-                }
-            }
-
-        }
+//        if(mIntent != null && mIntent.getAction() != null){
+//            if(mIntent.getAction().equals(ACTION_UPDATE_WEATHER)){
+//                if (checkLocationPermision()) {
+//                    Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
+//                    setupWeatherAndLocation();
+//                }
+//            }
+//
+//        }
 
     }
 
     private void snoozeAlarm( String from){
         ivSnooze.setEnabled(false);
-        Utils.trackEvent(this , GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_SNOOZE, from);
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_SNOOZE, from);
         bSnoozed = true;
         try {
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
@@ -357,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void stopAlarm() {
-        Utils.trackEvent(this , GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, "");
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_CLICK_STOP, "");
         bSnoozed = false;
         try {
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
@@ -391,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements
         Log.d("alarm","id = "+id);
         bottomLayoutAlarmRinging.setVisibility(View.VISIBLE);
         mRingingAlarm = Alarm.getAlarm(id , this);
-        Utils.trackEvent(this, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_RING,
+        AppUtils.trackEvent(this, GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_RING,
                 from +" | " + (mRingingAlarm!=null?mRingingAlarm.toString():"null") + "");
         if(mRingingAlarm.getRingtone() != null)
             playMediaSound(Uri.parse(mRingingAlarm.getRingtone()));
@@ -492,11 +451,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void turnOnFlash() {
         if(!hasFlash){
-            Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_TORCH, "Not supported");
+            AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_TORCH, "Not supported");
             Toast.makeText(this , R.string.noflash, Toast.LENGTH_LONG).show();
             return;
         }
-        Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_TORCH, "Turn on");
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_TORCH, "Turn on");
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             turnOnFlashMarshmallow();
             return;
@@ -514,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void turnOffFlash() {
-        Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_TORCH, "Turn off");
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_TORCH, "Turn off");
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             turnOffFlashMarshmallow();
             return;
@@ -573,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.main_layout:
-                Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SCREEN , "");
+                AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SCREEN , "");
                 if(!isAlarmRinging) {
                     bottomLayout.setVisibility(View.VISIBLE);
                     bottomLayout.postDelayed(new Runnable() {
@@ -585,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
             case R.id.iv_add_alarm:
-                Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_ADD_ALADM, "");
+                AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_ADD_ALADM, "");
                 startActivity(new Intent(this, AddAlarmActivity.class));
                 break;
             case R.id.iv_torch:
@@ -595,11 +554,11 @@ public class MainActivity extends AppCompatActivity implements
                     turnOffFlash();
                 break;
             case R.id.iv_snooze_alarm:
-                Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SNOOZE, "Button Click");
+                AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SNOOZE, "Button Click");
                 snoozeAlarm("Button click");
                 break;
             case R.id.iv_stop_alarm:
-                Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_STOP, "");
+                AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_STOP, "");
                 if(bSnoozed){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage(getString(R.string.stop_alarm_msg))
@@ -616,7 +575,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
             case R.id.iv_settings:
-                Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SETTINGS, "");
+                AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SETTINGS, "");
                 startActivity(new Intent(this , SettingsActivity.class));
                 break;
         }
@@ -631,12 +590,10 @@ public class MainActivity extends AppCompatActivity implements
         setDigitsColor();
         startClock();
 
-        if(!Utils.isWeatherPermited(this))
+        if(!AppUtils.isWeatherPermited(this))
             findViewById(R.id.weather_layout).setVisibility(View.INVISIBLE);
 
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
+
     }
 
     private void startClock(){
@@ -694,7 +651,7 @@ public class MainActivity extends AppCompatActivity implements
         ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
             @Override
             public Shader resize(int width, int height) {
-                int color = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).
+                @SuppressLint("NewApi") int color = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).
                         getInt(SettingsActivity.PREF_CLOCK_BACKGROUND_COLOR,
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                                         getColor(R.color.clock_color):getResources().getColor(R.color.clock_color));
@@ -731,9 +688,7 @@ public class MainActivity extends AppCompatActivity implements
 //        if(isAlarmRinging)
 //            snoozeAlarm("on stop");
 
-        stopLocationUpdates();
-        if(mGoogleApiClient.isConnected())
-            mGoogleApiClient.disconnect();
+
     }
 
     @Override
@@ -813,7 +768,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void hearShake() {
         if(isAlarmRinging) {
-            Utils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SNOOZE, "Shake");
+            AppUtils.trackEvent(this , GAConstants.CATEGORY_CLICKS , GAConstants.ACTION_CLICK_SNOOZE, "Shake");
             snoozeAlarm("Shake");
         }
     }
@@ -825,53 +780,29 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d("location" , "loc changed");
-        processLocationChangeAction(location);
-    }
-
-   /* @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        processLocationChangeAction(Utils.getLocation(Utils.getLocationManager(this)));
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Utils.getLocationManager(this).requestLocationUpdates(provider
-                , MIN_TIME, MIN_DIST, this);
-        bShowLocationUpdateToast = true;
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-//        processLocationChangeAction(Utils.getLocation(Utils.getLocationManager(this)));
-    }*/
-
     private void processLocationChangeAction(Location location){
-        Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
+        AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
                 GAConstants.ACTION_GOT_LOCATION, location.getLatitude()+"|"+location.getLongitude()
                         +"|"+location.getAccuracy());
 
         Log.d("flow1","processing location change");
-        Utils.storeLatLon(location.getLatitude()+"" , location.getLongitude()+""  , this);
-        GetWeatherNetworking networking = new GetWeatherNetworking(this, true, handler);
-        networking.makeRequest(Weather.class);
+        AppUtils.storeLatLon(location.getLatitude()+"" , location.getLongitude()+""  , this);
+//        GetWeatherNetworking networking = new GetWeatherNetworking(this, true, handler);
+//        networking.makeRequest(Weather.class);
     }
 
 
     private void updateWeather() {
-        if (!TextUtils.isEmpty(Utils.getLatLong(this))) {
+        if (!TextUtils.isEmpty(AppUtils.getLatLong(this))) {
             Log.d("weathr", "updating weather ui");
             findViewById(R.id.weather_layout).setVisibility(View.VISIBLE);
-            mTextCityName.setText(Utils.getCurrentLocation(this));
-            mTextCurrentTemp.setText(String.valueOf(Utils.getCurrentTemperatureC(this)));
+            mTextCityName.setText(AppUtils.getCurrentLocation(this));
+            mTextCurrentTemp.setText(String.valueOf(AppUtils.getCurrentTemperatureC(this)));
             mTextMinMax.setText(getString(R.string.avg) + " " +
-                    String.valueOf(Utils.getTemperatureC(this)));
-            mTextWeatherOverview.setText(Utils.getOverView(this, Utils.getWeatherCode(this),
+                    String.valueOf(AppUtils.getTemperatureC(this)));
+            mTextWeatherOverview.setText(AppUtils.getOverView(this, AppUtils.getWeatherCode(this),
                     Locale.getDefault().getLanguage()));
-            mTextWeatherIcon.setText(Utils.getPic(this, Utils.getWeatherCode(this), Utils.isDay(this)));
+            mTextWeatherIcon.setText(AppUtils.getPic(this, AppUtils.getWeatherCode(this), AppUtils.isDay(this)));
         }
     }
 
@@ -904,7 +835,7 @@ public class MainActivity extends AppCompatActivity implements
                         values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, code.getNight());
                         getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
                     }
-                    Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_SUMMARY_CODES, "");
+                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_SUMMARY_CODES, "");
                     handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
                     Log.d("codes", "got codes");
                 }
@@ -942,11 +873,11 @@ public class MainActivity extends AppCompatActivity implements
                     for(WeatherCodes code : codes){
                         ContentValues values = new ContentValues();
                         values.put(PicCodesTable.COL_UNIQUE_CODE , code.getCode());
-                        values.put(PicCodesTable.COL_DAY_PIC , Utils.getDayPicCode(code.getCode()));
-                        values.put(PicCodesTable.COL_NIGHT_PIC, Utils.getNightPicCode(code.getCode()));
+                        values.put(PicCodesTable.COL_DAY_PIC , AppUtils.getDayPicCode(code.getCode()));
+                        values.put(PicCodesTable.COL_NIGHT_PIC, AppUtils.getNightPicCode(code.getCode()));
                         getContentResolver().insert(PicCodesTable.CONTENT_URI,values);
                     }
-                    Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_PIC_CODES, "");
+                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_PIC_CODES, "");
                     handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
 
                 }
@@ -970,6 +901,15 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!isAlarmRinging && !bSnoozed)
+            AppUtils.checkRequiredToShowPremium(this);
+
+    }
+
+    /*
     private void askWeatherRequired(){
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -978,7 +918,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void run() {
                         try {
-                            Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LANGUAGE,
+                            AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LANGUAGE,
                                     Locale.getDefault()+"" , "");
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -988,7 +928,7 @@ public class MainActivity extends AppCompatActivity implements
                             builder.setNegativeButton(getText(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
+                                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
                                             GAConstants.ACTION_WEATHER_UPDATES_REJECTED_AT_LAUNCH , "");
                                 }
                             });
@@ -996,12 +936,12 @@ public class MainActivity extends AppCompatActivity implements
                                 @SuppressWarnings("MissingPermission")
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
+                                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
                                             GAConstants.ACTION_WEATHER_UPDATES_PERMITED_AT_LAUNCH, "");
 
                                     if (checkLocationPermision()) {
                                         Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
-                                        Utils.setWeatherPermission(MainActivity.this , true);
+                                        AppUtils.setWeatherPermission(MainActivity.this , true);
                                         setupWeatherAndLocation();
                                     }
                                 }
@@ -1035,6 +975,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
     @SuppressWarnings("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -1045,16 +986,16 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
+                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
                             GAConstants.ACTION_LOCATION_PERM_ACCEPTED_AT_LAUNCH, "");
 
-                    Utils.setWeatherPermission(MainActivity.this, true);
+                    AppUtils.setWeatherPermission(MainActivity.this, true);
                     Toast.makeText(MainActivity.this, getString(R.string.update_weather), Toast.LENGTH_LONG).show();
                     setupWeatherAndLocation();
                 }else{
-                    Utils.setWeatherPermission(this , false);
+                    AppUtils.setWeatherPermission(this , false);
                     Toast.makeText(MainActivity.this, getString(R.string.no_loc_permission), Toast.LENGTH_LONG).show();
-                    Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
+                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,
                             GAConstants.ACTION_LOCATION_PERM_REJECTED_AT_LAUNCH, "");
 
                 }
@@ -1096,11 +1037,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    /**
-     * Creating location request object
-     * */
+    */
+/**
+ * Creating location request object
+ * *//*
+
     protected void createLocationRequest() {
-        Utils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_REQUESTING_LOCATION , "");
+        AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_REQUESTING_LOCATION , "");
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -1123,7 +1066,7 @@ public class MainActivity extends AppCompatActivity implements
                         try {
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
-                            if(!Utils.hasInitialLocation(MainActivity.this))
+                            if(!AppUtils.hasInitialLocation(MainActivity.this))
                                 status.startResolutionForResult(
                                         MainActivity.this,
                                         333);
@@ -1137,9 +1080,11 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    /**
-     * Creating google api client object
-     * */
+    */
+/**
+ * Creating google api client object
+ * *//*
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -1147,18 +1092,22 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(LocationServices.API).build();
     }
 
-    /**
-     * Stopping location updates
-     */
+    */
+/**
+ * Stopping location updates
+ *//*
+
     protected void stopLocationUpdates() {
         if(mGoogleApiClient.isConnected())
             LocationServices.FusedLocationApi.removeLocationUpdates(
                     mGoogleApiClient, this);
     }
 
-    /**
-     * Starting the location updates
-     * */
+    */
+/**
+ * Starting the location updates
+ * *//*
+
     protected void startLocationUpdates() {
         if(mGoogleApiClient.isConnected())
             LocationServices.FusedLocationApi.requestLocationUpdates(
@@ -1168,7 +1117,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if(Utils.isWeatherPermited(this)) {
+        if(AppUtils.isWeatherPermited(this)) {
             Log.d("location" , "on connected");
 
 
@@ -1187,13 +1136,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Utils.trackEvent(this , GAConstants.CATEGORY_LOCATION, GAConstants.ACTION_ERROR_LOCATION, i +"");
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_LOCATION, GAConstants.ACTION_ERROR_LOCATION, i +"");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Utils.trackEvent(this , GAConstants.CATEGORY_LOCATION, GAConstants.ACTION_ERROR_LOCATION, connectionResult.getErrorMessage() +"");
+        AppUtils.trackEvent(this , GAConstants.CATEGORY_LOCATION, GAConstants.ACTION_ERROR_LOCATION, connectionResult.getErrorMessage() +"");
     }
+*/
 
 
 }

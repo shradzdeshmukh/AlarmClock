@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.models.Alarm;
 import com.cyno.alarm.ui.MainActivity;
 
@@ -41,7 +41,7 @@ public class AlarmReceiver extends BroadcastReceiver{
             WakeLocker.release();
             return;
         }*/
-        Utils.trackEvent(context , GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_BROADCAST_RECIEVE, mAlarm.toString() +"");
+        AppUtils.trackEvent(context , GAConstants.CATEGORY_ALARM_LOGIC, GAConstants.ACTION_ALARM_BROADCAST_RECIEVE, mAlarm.toString() +"");
 
         if (mAlarm.isActive()) {
 

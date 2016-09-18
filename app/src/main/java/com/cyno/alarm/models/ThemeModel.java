@@ -1,9 +1,7 @@
 package com.cyno.alarm.models;
 
 import android.graphics.Color;
-import android.util.Log;
 
-import com.cyno.alarm.color_picker.Palette;
 import com.mattyork.colours.Colour;
 
 /**
@@ -12,10 +10,12 @@ import com.mattyork.colours.Colour;
 public class ThemeModel {
     private int backgroundColor ;
     private int digitsgroundColor ;
+    private boolean isLocked;
 
-    public ThemeModel(int backgroundColor) {
+    public ThemeModel(int backgroundColor, boolean b) {
         this.backgroundColor = backgroundColor;
         this.digitsgroundColor = getContrast(backgroundColor);
+        this.isLocked = b;
 
     }
 
@@ -39,5 +39,13 @@ public class ThemeModel {
 
     public void setDigitsgroundColor(int digitsgroundColor) {
         this.digitsgroundColor = digitsgroundColor;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

@@ -26,10 +26,7 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.alarm_logic.AlarmService;
-import com.cyno.alarm.models.Weather;
-import com.cyno.alarm.networking.GetWeatherNetworking;
 
 /**
  * Define a sync adapter for the app.
@@ -55,10 +52,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ContentProviderClient provider, SyncResult syncResult) {
 
 		Log.d("sync", "syncing all matches");
-		if(Utils.isWeatherPermited(context)) {
-			GetWeatherNetworking netowking = new GetWeatherNetworking(context, false, null);
-			netowking.makeRequest(Weather.class);
-		}
+//		if(AppUtils.isWeatherPermited(context)) {
+//			GetWeatherNetworking netowking = new GetWeatherNetworking(context, false, null);
+//			netowking.makeRequest(Weather.class);
+//		}
 		context.startService(new Intent(context , AlarmService.class));
 	}
 

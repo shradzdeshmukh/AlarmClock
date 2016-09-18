@@ -13,8 +13,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
-import com.cyno.alarm.UtilsAndConstants.Utils;
 import com.cyno.alarm.adapters.ThemesAdapter;
 import com.cyno.alarm.models.ThemeModel;
 import com.cyno.alarmclock.R;
@@ -38,7 +38,7 @@ public class FragmentDefinedThemes extends Fragment implements AdapterView.OnIte
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Utils.trackScreen(getActivity() , "Defined Themes");
+        AppUtils.trackScreen(getActivity() , "Defined Themes");
         super.onViewCreated(view, savedInstanceState);
         GridView gvThemes = (GridView) view.findViewById(R.id.gv_themes);
         gvThemes.setAdapter(getGridAdapter());
@@ -53,8 +53,8 @@ public class FragmentDefinedThemes extends Fragment implements AdapterView.OnIte
     public ArrayList<ThemeModel> getThemesList() {
         ArrayList<ThemeModel> list = new ArrayList<>();
         int[] colors = getResources().getIntArray(R.array.theme_colors);
-        for (int color : colors){
-            list.add(new ThemeModel(color));
+        for (int index = 0 ; index < colors.length ; ++index){
+            list.add(new ThemeModel(colors[index] , index > 5? true:false));
         }
         return list;
     }
@@ -62,14 +62,18 @@ public class FragmentDefinedThemes extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d("red" , Color.red(adapter.getItem(position).getBackgroundColor()) + "");
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().
-                putInt(SettingsActivity.PREF_CLOCK_BACKGROUND_COLOR ,
-                        adapter.getItem(position).getBackgroundColor())
-                .putInt(SettingsActivity.PREF_CLOCK_DIGIT_COLOR ,
-                        adapter.getItem(position).getDigitsgroundColor())
-                .commit();
-        Utils.trackEvent(getActivity(), GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_PREDEFINED_THEME_CHOOSE,
-                adapter.getItem(position).getBackgroundColor()+" | " + adapter.getItem(position).getDigitsgroundColor());
-        getActivity().finish();
+        if(adapter.getItem(position).isLocked()){
+            AppUtils.ShowPremiumDialog(getActivity() , true);
+        }else {
+            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().
+                    putInt(SettingsActivity.PREF_CLOCK_BACKGROUND_COLOR,
+                            adapter.getItem(position).getBackgroundColor())
+                    .putInt(SettingsActivity.PREF_CLOCK_DIGIT_COLOR,
+                            adapter.getItem(position).getDigitsgroundColor())
+                    .commit();
+            AppUtils.trackEvent(getActivity(), GAConstants.CATEGORY_THEMES, GAConstants.ACTION_BACKGROUND_PREDEFINED_THEME_CHOOSE,
+                    adapter.getItem(position).getBackgroundColor() + " | " + adapter.getItem(position).getDigitsgroundColor());
+            getActivity().finish();
+        }
     }
 }

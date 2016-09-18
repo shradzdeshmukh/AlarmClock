@@ -8,19 +8,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 
 
 public class AlarmContentProvider extends ContentProvider{
 
-	public static final String AUTHORITY = "com.cyno.alarmpro";
+	public static final String AUTHORITY = "com.cyno.alarm";
 	private static final String DATABASE_NAME = "alarms_db";
 	private static final int DATABASE_VERSION = 2;
 
@@ -122,15 +119,15 @@ public class AlarmContentProvider extends ContentProvider{
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			AlarmTable.onCreate(db);
-			PicCodesTable.onCreate(db);
-			SummaryCodesTable.onCreate(db);
+//			PicCodesTable.onCreate(db);
+//			SummaryCodesTable.onCreate(db);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			AlarmTable.onUpdate(db, oldVersion, newVersion);
-			PicCodesTable.onUpdate(db, oldVersion, newVersion);
-			SummaryCodesTable.onUpdate(db, oldVersion, newVersion);
+//			PicCodesTable.onUpdate(db, oldVersion, newVersion);
+//			SummaryCodesTable.onUpdate(db, oldVersion, newVersion);
 		}
 	}
 }

@@ -1,31 +1,30 @@
 package com.cyno.alarm.UtilsAndConstants;
 
-import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.cyno.alarm.AlarmApplication;
 import com.cyno.alarm.database.PicCodesTable;
 import com.cyno.alarm.database.SummaryCodesTable;
 import com.cyno.alarm.models.Weather;
-import com.cyno.alarm.ui.MainActivity;
 import com.cyno.alarm.ui.SettingsActivity;
+import com.cyno.alarmclock.R;
 
-import java.util.Locale;
+import java.util.Calendar;
 
 /**
  * Created by hp on 19-06-2016.
  */
-public class Utils {
+public class AppUtils {
 
     private static final String KEY_WEATHER_CODE = "weather_code";
     private static final String KEY_IS_DAY = "is_day";
@@ -39,6 +38,8 @@ public class Utils {
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_WEATHER_UPDATES = "weather_updates";
     private static final String KEY_IS_FIRST_TIME_LAUNCH = "FirstLaunch";
+    private static final String ALARM_X_PACKAGE = "com.cyno.alarmclockpro";
+    private static final String KEY_LAST_PREMIUM_SHOWN = "shownPremium";
 
     public static String getLatLong(Context context) {
         Location loc = getLocation(getLocationManager(context));
@@ -413,5 +414,43 @@ public class Utils {
         }
     }
 
+    public static void OpenProApp(Context context){
+        try {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + ALARM_X_PACKAGE)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + ALARM_X_PACKAGE)));
+        }
+
+    }
+
+    public static void checkRequiredToShowPremium(Context context){
+        long lastShown = PreferenceManager.getDefaultSharedPreferences(context).getLong(KEY_LAST_PREMIUM_SHOWN , -1);
+        if(lastShown == -1){
+          PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(KEY_LAST_PREMIUM_SHOWN , System.currentTimeMillis()).commit();
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.add(Calendar.MINUTE , -1);
+//        cal.set(Calendar.DAY_OF_MONTH , -7);
+        if(lastShown != -1 && cal.getTimeInMillis() > lastShown) {
+            ShowPremiumDialog(context, false);
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(KEY_LAST_PREMIUM_SHOWN , System.currentTimeMillis()).commit();
+        }
+    }
+
+    public static void ShowPremiumDialog(final Context context , boolean isLocked){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(isLocked?R.string.locked:R.string.try_pro_title));
+        builder.setMessage(context.getString(R.string.try_pro_msg));
+        builder.setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                OpenProApp(context);
+            }
+        });
+        builder.setNegativeButton(context.getString(R.string.later), null);
+        builder.setCancelable(false);
+        builder.show();
+    }
 
 }

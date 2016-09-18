@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
-import com.cyno.alarm.UtilsAndConstants.Utils;
+import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.models.Weather;
 import com.cyno.alarm.ui.MainActivity;
 
@@ -28,7 +28,7 @@ public class GetWeatherNetworking extends AbstractNetworking {
 
     public GetWeatherNetworking(Context context, boolean isForeground , Handler handler) {
         super(context, isForeground);
-        url = mBaseUrl + "key=" + KEY + "&q=" + Utils.getLatLong(context);
+        url = mBaseUrl + "key=" + KEY + "&q=" + AppUtils.getLatLong(context);
         url = url.replace(" " , "");
         this.handler = handler;
     }
@@ -55,7 +55,7 @@ public class GetWeatherNetworking extends AbstractNetworking {
         Log.d("location" , "response " + response);
         super.onResponse(response);
         Weather weather = (Weather) response;
-        Utils.setWeather(weather,context);
+        AppUtils.setWeather(weather,context);
 
         if(isForeground)
             handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
