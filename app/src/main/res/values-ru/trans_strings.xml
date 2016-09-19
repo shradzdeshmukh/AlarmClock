@@ -38,6 +38,12 @@
     <string name="track_analytics">Включение отслеживания деятельности в рамках приложения</string>
     <string name="analytics_msg">Чтобы помочь нам улучшить производительность приложений, аналитика используется для отслеживания вашей деятельности в пределах приложения. Мы не будем ничего отслеживать, если вы установите эту опцию.</string>
 
-    <string name="app_name">Будильник X</string>
+    <string name="app_name">Будильник</string>
+    <string name="new_pro">новый</string>
+    <string name="pro">Попробуйте премию</string>
+    <string name="try_pro_title">Как наше приложение?</string>
+    <string name="try_pro_msg">Вы хотели бы попробовать нашу премиум приложение с более широкими возможностями?</string>
+    <string name="later">Позже</string>
+    <string name="locked">Содержание Тема закрыта</string>
 
 </resources>

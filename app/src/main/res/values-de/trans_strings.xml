@@ -37,6 +37,12 @@
     <string name="track_analytics">Aktivieren Tracking-Aktivitäten innerhalb der App</string>
     <string name="analytics_msg">Um uns zu helfen App-Leistung zu verbessern, wird Analytics verwendet, um Ihre Aktivitäten innerhalb der App zu verfolgen. Wir werden nicht alles verfolgen, wenn Sie diese Funktion deaktivieren.</string>
 
-    <string name="app_name">Wecker X</string>
+    <string name="app_name">Wecker</string>
+    <string name="new_pro">Neu</string>
+    <string name="pro">Versuchen Sie Prämie</string>
+    <string name="try_pro_title">Wie unsere App?</string>
+    <string name="try_pro_msg">Möchten Sie mit mehr Funktionen unserer Premium-App, um zu versuchen?</string>
+    <string name="later">Später</string>
+    <string name="locked">Inhalt Gesperrt</string>
 
 </resources>

@@ -264,7 +264,6 @@
             <TextView
                 android:padding="@dimen/normal_padding_2x"
                 android:textColor="@color/white"
-                android:text="@string/rate_us"
                 android:textSize="@dimen/settings_keys"
                 android:layout_width="0dp"
                 android:layout_weight="0.5"

@@ -37,6 +37,12 @@
     <string name="track_analytics">응용 프로그램 내에서 추적 활동을 활성화</string>
     <string name="analytics_msg">우리는 응용 프로그램 성능을 향상하기 위해 웹 로그 분석은 응용 프로그램 내에서 사용자의 활동을 추적하는 데 사용됩니다. 이를 설정하면 우리는 아무것도 추적하지 않습니다.</string>
 
-    <string name="app_name">알람 시계 X</string>
+    <string name="app_name">알람 시계</string>
+    <string name="new_pro">새로운</string>
+    <string name="pro">프리미엄 시도</string>
+    <string name="try_pro_title">우리의 응용 프로그램처럼?</string>
+    <string name="try_pro_msg">당신은 더 많은 기능과 프리미엄 앱을 시도 하시겠습니까?</string>
+    <string name="later">후에</string>
+    <string name="locked">콘텐츠 잠금</string>
 
 </resources>

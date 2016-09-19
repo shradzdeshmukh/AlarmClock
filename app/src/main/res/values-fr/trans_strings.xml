@@ -38,6 +38,12 @@
     <string name="track_analytics">Activer les activités de suivi au sein de l\'application</string>
     <string name="analytics_msg">Pour nous aider à améliorer les performances des applications Analytics est utilisé pour suivre vos activités au sein de l\'application. Nous ne suivre rien si vous désactivez cette option.</string>
 
-    <string name="app_name">Réveil X</string>
+    <string name="app_name">Réveil</string>
+    <string name="new_pro">Nouveau</string>
+    <string name="pro">Essayez premium</string>
+    <string name="try_pro_title">Comme notre application?</string>
+    <string name="try_pro_msg">Voulez-vous essayer notre application premium avec plus de fonctionnalités?</string>
+    <string name="later">Plus tard</string>
+    <string name="locked">contenu Locked</string>
 
 </resources>

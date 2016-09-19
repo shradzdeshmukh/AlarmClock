@@ -9,11 +9,5 @@
     <string name="snooze_time" translatable="false">Snooze time</string>
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="view_holder" translatable="false">tag_view_holder</string>
-    <string name="rate_us">Rate app</string>
-    <string name="pro">Try permium</string>
-    <string name="try_pro_title">Like our app?</string>
-    <string name="try_pro_msg">Try our premium app with more features</string>
-    <string name="later">Later</string>
-    <string name="locked">Content Locked</string>
 
 </resources>

@@ -41,6 +41,11 @@
 
     <string name="app_name">Alarm Clock</string>
     <string name="new_pro">New</string>
+    <string name="pro">Try permium</string>
+    <string name="try_pro_title">Like our app?</string>
+    <string name="try_pro_msg">Would you like to try our premium app with more features ?</string>
+    <string name="later">Later</string>
+    <string name="locked">Content Locked</string>
 
 
 

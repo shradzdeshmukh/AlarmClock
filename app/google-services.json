@@ -1,12 +1,12 @@
 {
   "project_info": {
-    "project_number": "747622268437",
-    "project_id": "firebase-alarm-clock"
+    "project_number": "863494992266",
+    "project_id": "alarm-clock-free"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:747622268437:android:e5343a37f65f5f73",
+        "mobilesdk_app_id": "1:863494992266:android:24a4a8060ec3bc9d",
         "android_client_info": {
           "package_name": "com.cyno.alarmclock"
         }
@@ -14,14 +14,14 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDH4OV7vcALHTcG4BU7aIShVWoNggXWT4I"
+          "current_key": "AIzaSyCps9XCn6kp1FGNI2kP0EEk4exZWW8ezEQ"
         }
       ],
       "services": {
         "analytics_service": {
           "status": 2,
           "analytics_property": {
-            "tracking_id": "UA-77574183-2"
+            "tracking_id": "UA-77574183-4"
           }
         },
         "appinvite_service": {
