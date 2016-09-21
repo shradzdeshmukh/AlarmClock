@@ -73,7 +73,7 @@ public class AppUtils {
         return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
-//    public static void setWeather(Weather weather, Context context) {
+//    public static void setWeather(Weather weather, Context context) {..
 //        PreferenceManager.getDefaultSharedPreferences(context).edit()
 //                .putInt(KEY_WEATHER_CODE , weather.getCurrent().getCondition().getCode())
 //                .putString(KEY_LOCATION, weather.getLocation().getName())
