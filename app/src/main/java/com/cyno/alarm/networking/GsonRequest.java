@@ -1,3 +1,4 @@
+/*
 package com.cyno.alarm.networking;
 
 import com.android.volley.AuthFailureError;
@@ -12,9 +13,11 @@ import com.google.gson.JsonSyntaxException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+*/
 /**
  * Created by hp on 07-05-2016.
- */
+ *//*
+
 public class GsonRequest<T> extends Request<T> {
     private final Gson gson = new Gson();
     private final Class<T> clazz;
@@ -51,4 +54,4 @@ public class GsonRequest<T> extends Request<T> {
     protected void deliverResponse(T response) {
         listener.onResponse(response);
     }
-}
+}*/

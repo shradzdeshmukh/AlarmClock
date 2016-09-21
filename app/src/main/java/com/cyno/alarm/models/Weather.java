@@ -1,13 +1,17 @@
+/*
 package com.cyno.alarm.models;
 
 import com.google.gson.Gson;
 
+*/
 /**
  * Created by hp on 02-07-2016.
- */
+ *//*
+
 public class Weather {
 
-    /**
+    */
+/**
      * name : Poona
      * region : Maharashtra
      * country : India
@@ -16,10 +20,12 @@ public class Weather {
      * tz_id : Asia/Kolkata
      * localtime_epoch : 1467493439
      * localtime : 2016-07-02 21:03
-     */
+     *//*
+
 
     private LocationModel location;
-    /**
+    */
+/**
      * last_updated_epoch : 1467492539
      * last_updated : 2016-07-02 20:48
      * temp_c : 24.2
@@ -38,7 +44,8 @@ public class Weather {
      * cloud : 89
      * feelslike_c : 26.8
      * feelslike_f : 80.2
-     */
+     *//*
+
 
     private CurrentModel current;
 
@@ -84,11 +91,13 @@ public class Weather {
         private double temp_c;
         private double temp_f;
         private int is_day;
-        /**
+        */
+/**
          * text : Light drizzle
          * icon : //cdn.apixu.com/weather/64x64/night/266.png
          * code : 1153
-         */
+         *//*
+
 
         private ConditionModel condition;
         private double feelslike_c;
@@ -165,3 +174,4 @@ public class Weather {
         }
     }
 }
+*/

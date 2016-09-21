@@ -1,3 +1,4 @@
+/*
 package com.cyno.alarm.networking;
 
 import android.content.Context;
@@ -9,9 +10,11 @@ import com.android.volley.VolleyError;
 import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.UtilsAndConstants.GAConstants;
 
+*/
 /**
  * Created by hp on 07-05-2016.
- */
+ *//*
+
 public abstract class AbstractNetworking implements Response.ErrorListener, Response.Listener {
 
     private static final int TIMEOUT = 30000;
@@ -47,3 +50,4 @@ public abstract class AbstractNetworking implements Response.ErrorListener, Resp
         AppUtils.trackEvent(context , GAConstants.CATEGORY_API , url , response.toString() +"");
     }
 }
+*/

@@ -15,11 +15,12 @@ import android.util.Log;
 import com.cyno.alarm.AlarmApplication;
 import com.cyno.alarm.database.PicCodesTable;
 import com.cyno.alarm.database.SummaryCodesTable;
-import com.cyno.alarm.models.Weather;
 import com.cyno.alarm.ui.SettingsActivity;
 import com.cyno.alarmclock.R;
 
 import java.util.Calendar;
+
+//import com.cyno.alarm.models.Weather;
 
 /**
  * Created by hp on 19-06-2016.
@@ -40,6 +41,8 @@ public class AppUtils {
     private static final String KEY_IS_FIRST_TIME_LAUNCH = "FirstLaunch";
     private static final String ALARM_X_PACKAGE = "com.cyno.alarmclockpro";
     private static final String KEY_LAST_PREMIUM_SHOWN = "shownPremium";
+
+    private static final int THRESHOLD_UPGRADE_MSG_DAYS = -7;
 
     public static String getLatLong(Context context) {
         Location loc = getLocation(getLocationManager(context));
@@ -70,16 +73,16 @@ public class AppUtils {
         return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
-    public static void setWeather(Weather weather, Context context) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putInt(KEY_WEATHER_CODE , weather.getCurrent().getCondition().getCode())
-                .putString(KEY_LOCATION, weather.getLocation().getName())
-                .putInt(KEY_IS_DAY , weather.getCurrent().getIs_day())
-                .putFloat(KEY_TEMP_C ,(float) weather.getCurrent().getTemp_c())
-                .putFloat(KEY_TEMP_F ,(float)  weather.getCurrent().getTemp_f())
-                .putFloat(KEY_TEMP_NOW_F ,(float)  weather.getCurrent().getFeelslike_f())
-                .putFloat(KEY_TEMP_NOW_C ,(float)  weather.getCurrent().getFeelslike_c()).commit();
-    }
+//    public static void setWeather(Weather weather, Context context) {
+//        PreferenceManager.getDefaultSharedPreferences(context).edit()
+//                .putInt(KEY_WEATHER_CODE , weather.getCurrent().getCondition().getCode())
+//                .putString(KEY_LOCATION, weather.getLocation().getName())
+//                .putInt(KEY_IS_DAY , weather.getCurrent().getIs_day())
+//                .putFloat(KEY_TEMP_C ,(float) weather.getCurrent().getTemp_c())
+//                .putFloat(KEY_TEMP_F ,(float)  weather.getCurrent().getTemp_f())
+//                .putFloat(KEY_TEMP_NOW_F ,(float)  weather.getCurrent().getFeelslike_f())
+//                .putFloat(KEY_TEMP_NOW_C ,(float)  weather.getCurrent().getFeelslike_c()).commit();
+//    }
 
     public static boolean isDay(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(KEY_IS_DAY ,1) == 1 ;
@@ -430,8 +433,8 @@ public class AppUtils {
         }
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
-        cal.add(Calendar.MINUTE , -1);
-//        cal.set(Calendar.DAY_OF_MONTH , -7);
+//        cal.add(Calendar.MINUTE , -1);
+        cal.set(Calendar.DAY_OF_MONTH , THRESHOLD_UPGRADE_MSG_DAYS);
         if(lastShown != -1 && cal.getTimeInMillis() > lastShown) {
             ShowPremiumDialog(context, false);
             PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(KEY_LAST_PREMIUM_SHOWN , System.currentTimeMillis()).commit();

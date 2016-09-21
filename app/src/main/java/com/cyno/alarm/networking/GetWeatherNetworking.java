@@ -1,3 +1,4 @@
+/*
 package com.cyno.alarm.networking;
 
 import android.content.Context;
@@ -9,17 +10,21 @@ import com.cyno.alarm.UtilsAndConstants.AppUtils;
 import com.cyno.alarm.models.Weather;
 import com.cyno.alarm.ui.MainActivity;
 
+*/
 /**
  * Created by hp on 07-05-2016.
- */
+ *//*
+
 public class GetWeatherNetworking extends AbstractNetworking {
 
 
-    /*
+    */
+/*
     login with facebook
     Welcome fb-dineshjohncena@yahoo.co.in
 
-     */
+     *//*
+
 
 //    public static final String mBaseUrl = "http://api.apixu.com/v1/current.json?key=4df6d3f159ba404cac1144529161906&q=18.5204300,73.8567440";
     public static final String mBaseUrl = "http://api.apixu.com/v1/current.json?";
@@ -61,3 +66,4 @@ public class GetWeatherNetworking extends AbstractNetworking {
             handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
     }
 }
+*/

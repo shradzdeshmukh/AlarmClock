@@ -1,3 +1,4 @@
+/*
 package com.cyno.alarm.networking;
 
 import android.content.Context;
@@ -7,9 +8,11 @@ import android.util.Log;
 import com.android.volley.VolleyError;
 import com.cyno.alarm.models.Weather;
 
+*/
 /**
  * Created by hp on 07-05-2016.
- */
+ *//*
+
 public class GetCodesNetworking extends AbstractNetworking {
 
 
@@ -47,3 +50,4 @@ public class GetCodesNetworking extends AbstractNetworking {
 
     }
 }
+*/

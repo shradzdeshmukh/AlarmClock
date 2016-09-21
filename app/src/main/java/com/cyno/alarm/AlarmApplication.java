@@ -2,9 +2,7 @@ package com.cyno.alarm;
 
 import android.app.Application;
 
-import com.cyno.alarmclock.BuildConfig;
 import com.cyno.alarmclock.R;
-import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
@@ -24,8 +22,8 @@ public class AlarmApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if(BuildConfig.DEBUG)
-            Stetho.initializeWithDefaults(this);
+//        if(BuildConfig.DEBUG)
+//            Stetho.initializeWithDefaults(this);
 
 
     }

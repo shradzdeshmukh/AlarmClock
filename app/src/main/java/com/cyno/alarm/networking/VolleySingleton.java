@@ -1,3 +1,4 @@
+/*
 package com.cyno.alarm.networking;
 
 import android.content.Context;
@@ -6,9 +7,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+*/
 /**
  * Created by hp on 07-05-2016.
- */
+ *//*
+
 public class VolleySingleton {
     private static VolleySingleton mInstance;
     private RequestQueue mRequestQueue;
@@ -43,3 +46,4 @@ public class VolleySingleton {
 
 }
 
+*/

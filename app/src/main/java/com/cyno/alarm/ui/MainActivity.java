@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,11 +49,8 @@ import com.cyno.alarm.UtilsAndConstants.GAConstants;
 import com.cyno.alarm.alarm_logic.AlarmService;
 import com.cyno.alarm.alarm_logic.SnoozeAlarmReceiver;
 import com.cyno.alarm.alarm_logic.WakeLocker;
-import com.cyno.alarm.database.PicCodesTable;
-import com.cyno.alarm.database.SummaryCodesTable;
 import com.cyno.alarm.in_app_utils.InAppListnerImpl;
 import com.cyno.alarm.models.Alarm;
-import com.cyno.alarm.models.WeatherCodes;
 import com.cyno.alarm.sync.SyncUtils;
 import com.cyno.alarmclock.R;
 import com.squareup.seismic.ShakeDetector;
@@ -64,6 +60,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+//import com.cyno.alarm.models.WeatherCodes;
 
 
 //TODO fix bug while alarm ringing press back... next time doesnt open app.. just rings alarm
@@ -806,42 +804,42 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void getWeatherCodes() {
-        if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_ARE_WEATHER_CODES_DUMPED, false)) {
-
-            PreferenceManager.getDefaultSharedPreferences(this).
-                    edit().putBoolean(KEY_ARE_WEATHER_CODES_DUMPED, true).commit();
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("codes", "geting codes");
-                    WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
-                    Log.d("codes", "got codes");
-                    for (WeatherCodes code : codes) {
-                        ContentValues values = new ContentValues();
-                        for (int index = 0; index < code.getLanguages().size(); index++) {
-                            values.put(SummaryCodesTable.COL_UNIQUE_CODE, code.getCode());
-                            WeatherCodes.LanguagesModel lang = code.getLanguages().get(index);
-                            values.put(SummaryCodesTable.COL_LANGUAGE_CODE, lang.getLang_iso());
-                            values.put(SummaryCodesTable.COL_DAY_SUMMARY, lang.getDay_text());
-                            values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, lang.getNight_text());
-                            getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
-                            values.clear();
-                        }
-                        values.put(SummaryCodesTable.COL_UNIQUE_CODE, code.getCode());
-                        values.put(SummaryCodesTable.COL_LANGUAGE_CODE, "en");
-                        values.put(SummaryCodesTable.COL_DAY_SUMMARY, code.getDay());
-                        values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, code.getNight());
-                        getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
-                    }
-                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_SUMMARY_CODES, "");
-                    handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
-                    Log.d("codes", "got codes");
-                }
-            }).start();
-        }
-    }
+//    private void getWeatherCodes() {
+//        if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_ARE_WEATHER_CODES_DUMPED, false)) {
+//
+//            PreferenceManager.getDefaultSharedPreferences(this).
+//                    edit().putBoolean(KEY_ARE_WEATHER_CODES_DUMPED, true).commit();
+//
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d("codes", "geting codes");
+//                    WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
+//                    Log.d("codes", "got codes");
+//                    for (WeatherCodes code : codes) {
+//                        ContentValues values = new ContentValues();
+//                        for (int index = 0; index < code.getLanguages().size(); index++) {
+//                            values.put(SummaryCodesTable.COL_UNIQUE_CODE, code.getCode());
+//                            WeatherCodes.LanguagesModel lang = code.getLanguages().get(index);
+//                            values.put(SummaryCodesTable.COL_LANGUAGE_CODE, lang.getLang_iso());
+//                            values.put(SummaryCodesTable.COL_DAY_SUMMARY, lang.getDay_text());
+//                            values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, lang.getNight_text());
+//                            getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
+//                            values.clear();
+//                        }
+//                        values.put(SummaryCodesTable.COL_UNIQUE_CODE, code.getCode());
+//                        values.put(SummaryCodesTable.COL_LANGUAGE_CODE, "en");
+//                        values.put(SummaryCodesTable.COL_DAY_SUMMARY, code.getDay());
+//                        values.put(SummaryCodesTable.COL_NIGHT_SUMMARY, code.getNight());
+//                        getContentResolver().insert(SummaryCodesTable.CONTENT_URI, values);
+//                    }
+//                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_SUMMARY_CODES, "");
+//                    handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
+//                    Log.d("codes", "got codes");
+//                }
+//            }).start();
+//        }
+//    }
 
     private String getJSONString() {
         String json = null;
@@ -859,31 +857,31 @@ public class MainActivity extends AppCompatActivity implements
         return json;
     }
 
-    private void getPicCodes(){
-        if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_ARE_PIC_CODES_DUMPED, false)) {
-
-            PreferenceManager.getDefaultSharedPreferences(this).
-                    edit().putBoolean(KEY_ARE_PIC_CODES_DUMPED , true).commit();
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("codes", "geting codes");
-                    WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
-                    for(WeatherCodes code : codes){
-                        ContentValues values = new ContentValues();
-                        values.put(PicCodesTable.COL_UNIQUE_CODE , code.getCode());
-                        values.put(PicCodesTable.COL_DAY_PIC , AppUtils.getDayPicCode(code.getCode()));
-                        values.put(PicCodesTable.COL_NIGHT_PIC, AppUtils.getNightPicCode(code.getCode()));
-                        getContentResolver().insert(PicCodesTable.CONTENT_URI,values);
-                    }
-                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_PIC_CODES, "");
-                    handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
-
-                }
-            }).start();
-        }
-    }
+//    private void getPicCodes(){
+//        if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_ARE_PIC_CODES_DUMPED, false)) {
+//
+//            PreferenceManager.getDefaultSharedPreferences(this).
+//                    edit().putBoolean(KEY_ARE_PIC_CODES_DUMPED , true).commit();
+//
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d("codes", "geting codes");
+//                    WeatherCodes[] codes = WeatherCodes.objectFromData(getJSONString());
+//                    for(WeatherCodes code : codes){
+//                        ContentValues values = new ContentValues();
+//                        values.put(PicCodesTable.COL_UNIQUE_CODE , code.getCode());
+//                        values.put(PicCodesTable.COL_DAY_PIC , AppUtils.getDayPicCode(code.getCode()));
+//                        values.put(PicCodesTable.COL_NIGHT_PIC, AppUtils.getNightPicCode(code.getCode()));
+//                        getContentResolver().insert(PicCodesTable.CONTENT_URI,values);
+//                    }
+//                    AppUtils.trackEvent(MainActivity.this , GAConstants.CATEGORY_LOCATION ,GAConstants.ACTION_GOT_PIC_CODES, "");
+//                    handler.sendEmptyMessage(MainActivity.WEATHER_UPDATED);
+//
+//                }
+//            }).start();
+//        }
+//    }
 
     private void setAlarmSnoozeDuration(Alarm mAlarm){
         Intent mIntent = new Intent(this,SnoozeAlarmReceiver.class);
